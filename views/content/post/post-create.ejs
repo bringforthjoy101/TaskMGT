@@ -1,0 +1,49 @@
+<div class="col-sm-8">    
+        <div class="jumbotron">
+            <form action="" method="post">
+              Post Title:<br>
+              <input type="text" name="post_title" value="Post Title">
+              <br><br/>
+              Post Body:<br>
+              <textarea rows="4" cols="50" name="post_body" value="Post Body"></textarea>
+              <br><br>
+              Author:<br>
+               <select name = "author_id">
+                    <% authors.forEach(function(author) { %>
+                    <option  value="<%= author.id %>"><%= author.first_name %></option>
+                <br/>
+               <% }); %>
+                </select>
+            <br><br>
+              Category:<br>
+                <div>
+                     <% categories.forEach(function(category) { %>
+                    <input type="checkbox" class='categoryCheckbox' name="categories" id="<%= category.id %>" value="<%= category.id %>">
+                    <label for="<%= category.name %>"><%= category.name %></label>
+                    
+                <br/>
+               <% }); %>
+                 </div>
+              <br><br>
+              <input type="submit" value="Create Post" onClick="checkCat()">
+             </form>
+
+        </div>
+    </div>
+<script>
+    function checkCat() {
+    var checkBoxes = document.getElementsByClassName( 'categoryCheckbox' );
+    var isChecked = false;
+    for (var i = 0; i < checkBoxes.length; i++) {
+        if ( checkBoxes[i].checked ) {
+            isChecked = true;
+        };
+    };
+    if ( isChecked ) {
+        
+        } else {
+            alert( 'Please, check at least one checkbox!' );
+        }   
+}
+</script>
+ 

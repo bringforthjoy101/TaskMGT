@@ -1,0 +1,32 @@
+<!--team VIEW STARTS HERE -->
+<!--complete logic for team view-->
+<% switch (display) {
+    case 'teamList' : %>
+           <%- include ('../../content/team/team-list') %>
+           <% break;
+     
+    case 'teamDetail' : %>
+    <%- include ('../../content/team/team-detail') %>
+           <% break;
+    
+    case 'teamCreate' : %>
+    <%- include ('../../content/team/team-create') %>
+           <% break;
+    
+    case 'teamUpdate' : %>
+    <%- include ('../../content/team/team-update') %>
+           <% break;
+           
+    case 'teamDelete' : %>
+    <%- include ('../../content/team/team-delete') %>
+           <% break;
+
+       case 'teamDisplay' : %>
+       <%- include ('../../content/team/team-list') %>
+              <% break;
+           
+    default : %>
+           <%- include ('../../pages/index') %>
+           <%  
+    } %>
+     

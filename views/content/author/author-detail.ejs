@@ -1,0 +1,31 @@
+<div class="col-sm-8">    
+        <div class="">
+             <h1>Details of a Single author - <%= author.firstname %> <%= author.lastname %> </h1>
+             <p>I am an author for this ID = <%= author.id %></p>
+             <p>Author First Name: <%= author.firstname %></p>
+             <p>Author Last Name:  <%= author.lastname %></p>
+             <a href="/catalog/author/<%= author.id %>/update">Edit  Author</a> | <a href="/catalog/author/<%= author.id %>/delete">Delete Author</a>
+        
+        <% if(author_books.length == 0) { %>
+            <h2>There are no books by this author yet </h2>
+        <% } else { %>
+            <h2>All Books by this Author</h2>
+            <div class="">
+                <ol>
+                <% author_books.forEach(function(book) { %>
+                        <li>
+                            <p> 
+                                <a href="/catalog/book/<%= book.id %>"><%= book.title %></a>
+                                 <br/>
+                                <%= book.summary %>
+                                <br/> <a href="/blog/book/<%= book.id %>/update">Edit  Book</a> | <a href="/blog/book/<%= post.id %>/delete">Delete Book</a>
+                            </p>
+                        </li>
+                    <br/>
+                <% }); %>
+                </ol>
+            </div>    
+         <% } %>   
+        </div>
+</div>
+ 

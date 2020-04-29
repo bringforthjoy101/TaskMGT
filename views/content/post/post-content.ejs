@@ -1,0 +1,29 @@
+<!--POST VIEW STARTS HERE -->
+<!--complete logic for post view-->
+<% switch (display) {
+case 'postList' : %>
+       <%- include ('../../content/post/post-list') %>
+       <% break;
+ 
+case 'postDetail' : %>
+<%- include ('../../content/post/post-detail') %>
+       <% break;
+
+case 'postCreate' : %>
+<%- include ('../../content/post/post-create') %>
+       <% break;
+
+case 'postUpdate' : %>
+<%- include ('../../content/post/post-update') %>
+       <% break;
+       
+case 'postDelete' : %>
+<%- include ('../../content/post/post-delete') %>
+       <% break;
+       
+default : %>
+       <%- include ('../../pages/index') %>
+       <%  
+} %>
+ 
+ 

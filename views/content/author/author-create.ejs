@@ -1,0 +1,32 @@
+<div class="col-sm-8">    
+        <div class="jumbotron">
+            <h2> Create Author Form </h2>
+             <% if( typeof(errors) != "undefined") { %>
+              <ol>
+                <% errors.forEach(function(error) { %>
+                        <li><p style="color:red;"> <%= error.msg %></p></li>
+                <% }); %>
+                </ol>
+            <% } %>
+            <form action="" method="post">
+              Author First Name:<br>
+              <input type="text" id="firstname" name="firstname" placeholder="Author First Name">
+              <br><br>
+              Author Last Name:<br>
+              <input type="text" id="lastname" name="lastname" placeholder="Author Last Name">
+              <br><br>
+              Date of Birth:<br>
+              <input placeholder="Date of Birth" class="textbox-n" type="text" onfocus="(this.type='date')" id="date_of_birth" name="date_of_birth" >
+              <br><br>
+              Date of Death:<br>
+              <input placeholder="Date of Death" class="textbox-n" type="text" onfocus="(this.type='date')" id="date_of_death" name="date_of_death" >
+              <br><br>
+              Biography:<br>
+              <textarea rows="4" cols="50" id="bio"  name="bio" placeholder='Enter bio here...'></textarea>
+              <br><br>
+              <input type="submit" value="Create Author">
+            </form>
+        </div>
+</div>
+
+ 

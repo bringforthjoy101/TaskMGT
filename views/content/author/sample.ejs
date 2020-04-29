@@ -1,0 +1,17 @@
+<div class="col-sm-8">    
+        <div class="">
+        <h1>Author List</h1>
+        <h4>Authors in the database:</h4>
+        <ol>
+        <% authors.forEach(function(author) { %>
+                <li>
+                    <h4><a href="/catalog/author/<%= author.id %>"><%= author.username %></a></h4>
+                    <p>The main body of the author <%= author.username %>, <%= author.email %></p>
+                     <a href="/catalog/author/<%= author.id %>/update">Edit  Author</a> | <a href="/catalog/author/<%= author.id %>/delete">Delete Author</a>
+                </li>
+            <br/>
+        <% }); %>
+        </ol>
+    </div>
+    <a href="/catalog/author/create"> CLICK HERE TO CREATE AUTHOR</a>
+</div>

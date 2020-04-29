@@ -1,0 +1,32 @@
+<!--task VIEW STARTS HERE -->
+<!--complete logic for task view-->
+<% switch (display) {
+    case 'taskList' : %>
+           <%- include ('../../content/task/task-list') %>
+           <% break;
+     
+    case 'taskDetail' : %>
+    <%- include ('../../content/task/task-detail') %>
+           <% break;
+    
+    case 'taskCreate' : %>
+    <%- include ('../../content/task/task-create') %>
+           <% break;
+    
+    case 'taskUpdate' : %>
+    <%- include ('../../content/task/task-update') %>
+           <% break;
+           
+    case 'taskDelete' : %>
+    <%- include ('../../content/task/task-delete') %>
+           <% break;
+
+       case 'taskDisplay' : %>
+       <%- include ('../../content/task/task-list') %>
+              <% break;
+           
+    default : %>
+           <%- include ('../../pages/index') %>
+           <%  
+    } %>
+     

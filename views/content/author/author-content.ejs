@@ -1,0 +1,28 @@
+<!--AUTHOR VIEW STARTS HERE -->
+<!--complete logic for author view-->
+<% switch (display) {
+case 'authorList' : %>
+       <%- include ('../../content/author/author-list') %>
+       <% break;
+ 
+case 'authorDetail' : %>
+<%- include ('../../content/author/author-detail') %>
+       <% break;
+
+case 'authorCreate' : %>
+<%- include ('../../content/author/author-create') %>
+       <% break;
+
+case 'authorUpdate' : %>
+<%- include ('../../content/author/author-update') %>
+       <% break;
+       
+case 'authorDelete' : %>
+<%- include ('../../content/author/author-delete') %>
+       <% break;
+       
+default : %>
+       <%- include ('../../pages/index') %>
+       <%  
+} %>
+ 

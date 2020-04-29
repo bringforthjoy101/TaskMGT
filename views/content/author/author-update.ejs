@@ -1,0 +1,16 @@
+<div class="col-sm-8">    
+        <div class="jumbotron">
+            <form action="/catalog/author/<%= author.id %>/update" method="post">
+               Author First Name:<br>
+              <input type="text" name="first_name" value="<%= author.first_name %>">
+              <br><br>
+              Author Last Name:<br>
+              <input type="text" name="last_name" value="<%= author.last_name %>">
+              <br><br>
+               Author Email Address:<br>
+              <input type="email" name="email" value="<%= author.email %>">
+              <br><br>
+              <input type="submit" value="Update Author">
+            </form>
+        </div>
+</div>

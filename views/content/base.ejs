@@ -1,0 +1,29 @@
+<% switch (page) {
+case 'boardPage' : %>
+       <%- include ('../content/board/board-content') %>
+       <% break;
+ 
+case 'teamPage' : %>
+<%- include ('../content/team/team-content') %>
+       <% break;
+
+case 'taskPage' : %>
+<%- include ('../content/task/task-content') %>
+       <% break;
+
+case 'dashboardPage' : %>
+<%- include ('../pages/userMain') %>
+       <% break;
+
+case 'adminPage' : %>
+<%- include ('../pages/adminMain') %>
+       <% break;
+
+case 'errorPage' : %>
+<%- include ('../pages/error') %>
+       <% break;
+       
+default : %>
+       <%- include ('../content/board/dashboard') %>
+       <%  ;
+} %>

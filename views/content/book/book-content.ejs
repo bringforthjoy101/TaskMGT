@@ -1,0 +1,28 @@
+<!--BOOK VIEW STARTS HERE -->
+<!--complete logic for book view-->
+<% switch (display) {
+case 'bookList' : %>
+       <%- include ('../../content/book/book-list') %>
+       <% break;
+ 
+case 'bookDetail' : %>
+<%- include ('../../content/book/book-detail') %>
+       <% break;
+
+case 'bookCreate' : %>
+<%- include ('../../content/book/book-create') %>
+       <% break;
+
+case 'bookUpdate' : %>
+<%- include ('../../content/book/book-update') %>
+       <% break;
+       
+case 'bookDelete' : %>
+<%- include ('../../content/book/book-delete') %>
+       <% break;
+       
+default : %>
+       <%- include ('../../pages/index') %>
+       <%  
+} %>
+ 

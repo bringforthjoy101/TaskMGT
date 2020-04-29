@@ -1,0 +1,23 @@
+<div class="col-sm-8">    
+        <div class="jumbotron">
+            <form action="/blog/post/<%= post.id %>/update" method="post">
+              Post Title:<br>
+              <input type="text" name="post_title" value="<%= post.post_title %>">
+              <br><br/>
+              Post Body:<br>
+              <textarea   rows="4" cols="50" name="post_body" value="<%= post.post_body %>"></textarea>
+              <br/><br/>
+              Category:<br>
+                <div>
+                     <% categories.forEach(function(category) { %>
+                    <input type="checkbox" class='categoryCheckbox' name="categories" id="<%= category.id %>" value="<%= category.id %>">
+                    <label for="<%= category.name %>"><%= category.name %></label>
+                    
+                <br/>
+               <% }); %>
+                 </div>
+              <br>
+              <input type="submit" value="Update Post" onClick="checkCat()">
+            </form>
+        </div>
+    </div>

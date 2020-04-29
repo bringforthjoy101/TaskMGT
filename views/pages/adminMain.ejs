@@ -1,0 +1,19 @@
+
+<p><%=adminContents %></p>
+
+<h4>Users in the database:</h4>
+<ul>
+<% users.forEach(function(user) { %>
+    <li><%=user.id %>; <%= user.username %> <%= user.email %>; <%= user.password %>
+<% }); %>
+</ul>
+
+<p>User information:</p>
+<ul>
+    <li>Firstname: <%= user.firstname %></li>
+    <li>Lastname: <%= user.lastname %></li>
+    <li>Lastname: <%= user.username %></li>
+    <li>Email: <%= user.email %></li>
+    <li>ID: <%= user.id %></li>
+    <li>Last Login: <%= user.last_login %></li>
+</ul>

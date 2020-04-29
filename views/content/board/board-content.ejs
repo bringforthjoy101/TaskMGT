@@ -1,0 +1,32 @@
+<!--board VIEW STARTS HERE -->
+<!--complete logic for board view-->
+<% switch (display) {
+    case 'boardList' : %>
+           <%- include ('../../content/board/board-list') %>
+           <% break;
+     
+    case 'boardDetail' : %>
+    <%- include ('../../content/board/board-detail') %>
+           <% break;
+    
+    case 'boardCreate' : %>
+    <%- include ('../../content/board/board-create') %>
+           <% break;
+    
+    case 'boardUpdate' : %>
+    <%- include ('../../content/board/board-update') %>
+           <% break;
+           
+    case 'boardDelete' : %>
+    <%- include ('../../content/board/board-delete') %>
+           <% break;
+
+       case 'boardDisplay' : %>
+       <%- include ('../../content/board/board-list') %>
+              <% break;
+           
+    default : %>
+           <%- include ('../../pages/index') %>
+           <%  
+    } %>
+     

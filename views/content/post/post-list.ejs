@@ -1,0 +1,20 @@
+HELLO POSTLIST
+<div class="col-sm-8">    
+        <div class="">
+            <ol>
+            <% posts.forEach(function(post) { %>
+                    <li>
+                        <h4><a href="/blog/post/<%= post.id %>"><%= post.post_title %></a></h4>
+                        <p>The main body of the post <%= post.post_body %> <br/>
+                        <b>Posted by Author: </b> <%= post.Author.first_name %> <%= post.Author.last_name %> <br/>
+                         <!--Category: DISPLAY CATEGORY HERE -->
+                         <b>Inside Categories: </b> <% post.categories.forEach(function(category) { %>  <a href="/blog/category/<%= category.id %>/"> <%= category.name %> </a>  <% }); %>
+                        </p>
+                         <a href="/blog/post/<%= post.id %>/update">Edit  Post</a> | <a href="/blog/post/<%= post.id %>/delete">Delete Post</a>
+                    </li>
+                <br/>
+            <% }); %>
+            </ol>
+        </div>
+            <a href="/blog/post/create"> CLICK HERE TO CREATE POST</a>
+    </div>
