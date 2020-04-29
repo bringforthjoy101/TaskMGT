@@ -31,7 +31,7 @@ exports.team_create_post = [
             req.session.errors = errors;
             req.session.success = false;
             res.redirect('/todo/teams');
-          }
+          } 
           req.session.success = false;
     const team = await models.Team.create({
         team_name: req.body.team_name,
