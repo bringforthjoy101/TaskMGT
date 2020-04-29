@@ -48,9 +48,9 @@ exports.board_create_post = [
     // fields Validtion
     check('board_name')
     .not().isEmpty().withMessage('Board Name is required')
-    .isLength({ min: 2 }).withMessage('Board Name must be at least 2 chars long')
-    .custom(value => { return models.Board.findOne({ where: { board_name: value } })
-    .then(board => { if (board) { return Promise.reject('Board Name Already Exists'); } }); }),
+    .isLength({ min: 2 }).withMessage('Board Name must be at least 2 chars long'),
+    // .custom(value => { return models.Board.findOne({ where: { board_name: value } })
+    // .then(board => { if (board) { return Promise.reject('Board Name Already Exists'); } }); }),
     check('employee_id')
     .not().isEmpty().withMessage('Employee is required'),
     
@@ -59,7 +59,8 @@ exports.board_create_post = [
     sanitizeBody('employee_id').escape(),
     
     // Start processing requests
-    function (req, res, next) {
+    async function (req, res, next) {
+        try {
         const errors = validationResult(req);
         if (errors) {
             var errorResponse = {
@@ -69,18 +70,32 @@ exports.board_create_post = [
                 };
             return res.status(500).json({error: errorResponse });
         }
-    models.Board.create({
-        board_name: req.body.board_name,
-        userId: req.body.employee_id
-    }).then(function(board) {
-            console.log("Board created successfully");
-           // check if there was an error during post creation
-            var displayData = {
-                message: 'Board created successfully',
-                board: board,
+            models.Board.create({
+                board_name: req.body.board_name,
+                userId: req.body.employee_id,
+            }).then(function(board) {
+                    console.log("Board created successfully");
+                   // check if there was an error during post creation
+                    var displayData = {
+                        message: 'Board created successfully',
+                        board: board,
+                    };
+                    return res.status(200).json({success: displayData });
+                });
+        }
+        catch(err) {
+            console.log('The error log ' + err);
+            var catchResponse = {
+                devMessage: 'Error in Board Listing',
+                title: 'board Create Function',
+                fileLocation: 'controllers/api/boardController.js',
+                error: err,
+                message: err.message,
             };
-            return res.status(200).json({success: displayData });
-        });
+            return res.status(500).json({ 
+                error: catchResponse
+            });
+        }
 }
 ];
 

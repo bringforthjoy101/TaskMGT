@@ -71,12 +71,8 @@ exports.board_create_post = [
     
     // Start processing requests
     async function (req, res, next) {
-        const errors = validationResult(req);
-        if (errors) {
-            req.session.errors = errors;
-            req.session.success = false;
-            res.redirect('/todo/boards');
-        }
+        try {
+        
     models.Board.create({
         board_name: req.body.board_name,
         userId: req.body.employee_id
@@ -91,6 +87,15 @@ exports.board_create_post = [
         req.session.success = true;
         res.redirect('/todo/boards');
   });
+        }
+        catch(err) {
+            const errors = validationResult(req);
+            if (errors) {
+                req.session.errors = errors;
+                req.session.success = false;
+                res.redirect('/todo/boards');
+            }
+        }
 }
 ];
 
