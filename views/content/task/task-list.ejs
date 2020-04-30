@@ -40,7 +40,7 @@
                     <% tasks.forEach(function(task) { %>
                     <tr>
                         <td><%= task.id %></td>
-                        <td><%= task.title %></td>
+                        <td><a href="/todo/task/<%= task.id %>"><%= task.title %></a></td>
                         <td><%= task.duration %> Hour(s)</td>
                         <td><span class="btn btn-label-primary btn-sm"><%= task.status %></span></td>
                         <td><%= task.user.username %></td>

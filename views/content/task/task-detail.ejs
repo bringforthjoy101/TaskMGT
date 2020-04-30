@@ -1,0 +1,44 @@
+<!-- begin:: Content -->
+<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+    
+    <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head">
+            <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+                    <%= title %>
+                </h3>
+                
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-toolbar">
+                    <div class="dropdown dropdown-inline">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            
+            
+            Title: <%= task.title %> <br>
+            Description: <%= task.desc %> <br>
+            Duration: <%= task.duration %> Hour(s) <br>
+            Assigned to: <%= task.Employee %> <br>
+            Task Status: <%= task.status %> <br>
+            Task Board: <%= task.Board.board_name %> <br>
+            Assigned By: <%= task.user.username %> <br>
+            Time started: <%= moment(task.startedAt).calendar() %> <br>
+            Time Due: <%= moment(task.dueAt).calendar() %> <br>
+            Team:  <%= task.Team.team_name %> <br>
+            Sprint: <%= task.sprint %> Days <br>
+            Sprint Period: <%= moment(task.sprintPeriod).format("dddd, MMMM Do YYYY, h:mm:ss a") %> <br>
+
+        </div>
+        
+    </div>
+    
+</div>
+
+<!-- end:: Content -->
+
+

@@ -12,6 +12,7 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-toolbar">
                     <div class="dropdown dropdown-inline">
+                        <% if (user.profile == 'Owner') { %>
                         <button type="button" class="btn btn-brand btn-brand btn-upper btn-bold" data-toggle="modal" data-target="#exampleModal">Create New Team</button>
                         <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -55,13 +56,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <% } %>
                     </div>
                 </div>
             </div>
         </div>
         <div class="kt-portlet__body">
             <% if (errors) { %>
-                <% errors.errors.forEach(function(error){ %>
+                <% errors.forEach(function(error){ %>
         			<div class="alert alert-solid-danger alert-bold" role="alert">
                         <div class="alert-text"><%= error.msg %></div><br>
                         <div class="alert-close">
@@ -83,7 +85,9 @@
                         <th>id</th>
                         <th>Team Name</th>
                         <th>Time Created</th>
+                        <% if (user.profile == 'Owner') { %>
                         <th>Actions</th>
+                        <% } %>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +96,9 @@
                         <td><%= team.id %></td>
                         <td><a href="/todo/team/<%= team.id %>"><%= team.team_name %></a></td>
                         <td><%= moment(team.createdAt).fromNow() %></td>
-                        <td nowrap><button type="button" class="btn btn-danger btn-elevate btn-icon btn-xs"><i class="la la-trash"></i></button></td>
+                        <% if (user.profile == 'Owner') { %>
+                        <td><a href="/todo/team/<%= team.id %>/delete" class="btn btn-danger btn-elevate btn-icon btn-xs"><i class="la la-trash"></i></a></td>
+                        <% } %>
                     </tr>
                     <% }); %>
                 </tbody>

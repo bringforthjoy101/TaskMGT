@@ -356,18 +356,50 @@ exports.task_list_completed = function(req, res, next) {
 
 // Display detail page for a specific task.
 exports.task_detail = async function(req, res, next) {
-
+    
+    // const team = await models.Team.findById( req.params.team_id );
+    // const board = await models.Team.findById( req.params.team_id );
+    // const employee = await models.Team.findById( req.params.team_id );
+    
     models.Task.findById(
-        req.params.task_id 
-        ).then(task => {
-        res.json({
-            success: 'Task Details Listed Successfully',
-            task: task
+        req.params.task_id, {
+            include: [
+                    {
+                      model: models.user,
+                      attributes: ['id', 'firstname', 'lastname', 'username']
+                    },
+                    {
+                      model: models.Board,
+                      attributes: ['id', 'board_name']
+                    },
+                    {
+                      model: models.Team,
+                      attributes: ['id', 'team_name']
+                    }
+                    
+                ]
+        } 
+        ).then(function(task) {
+         if (task == null) { // No author with that id.
+            var err = new Error('Board not found');
+            err.status = 404;
+            return next(err);
+        }
+        
+        // Successful, so render.
+        res.render('pages/index',  {
+            title: 'Task Details',
+            page: 'taskPage',
+            display: 'taskDetail',
+            task: task,
+            user: req.user,
+            moment: moment,
+            layout: 'layouts/detail'
         });
-    }).catch(error => {
-        console.log("There was an error: " + error);
-        res.status(404).send(error);
+        console.log("task Details Listed Successfully");
+        
     });
+        
 };
 
 // Update task status to todo
