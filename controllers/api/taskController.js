@@ -220,7 +220,7 @@ exports.task_list = function(req, res, next) {
 exports.task_list_employee = function(req, res, next) {
     try {
     models.Task.findAll({
-        where: {Employee: req.user.username},
+        where: {Employee: req.params.employee},
         include: [
             {
               model: models.user,
@@ -263,7 +263,7 @@ exports.task_list_employee = function(req, res, next) {
 exports.task_list_active = function(req, res, next) {
     try {
         models.Task.findAll({
-            where: {Employee: req.user.username, status: 'InProgress' || 'Todo'},
+            where: {Employee: req.params.employee, status: 'InProgress' || 'Todo'},
             include: [
                 {
                   model: models.user,
@@ -306,7 +306,7 @@ exports.task_list_active = function(req, res, next) {
 exports.task_list_pending = function(req, res, next) {
     try {
         models.Task.findAll({
-            where: {Employee: req.user.username, status: 'Todo'},
+            where: {Employee: req.params.employee, status: 'Todo'},
             include: [
                 {
                   model: models.user,
@@ -349,7 +349,7 @@ exports.task_list_pending = function(req, res, next) {
 exports.task_list_completed = function(req, res, next) {
     try {
         models.Task.findAll({
-            where: {Employee: req.user.username, status: 'Done'},
+            where: {Employee: req.params.employee, status: 'Done'},
             include: [
                 {
                   model: models.user,
@@ -393,14 +393,14 @@ exports.task_detail = async function(req, res, next) {
 
     models.Task.findById(
         req.params.task_id 
-        ).then(task => {
-        res.json({
+        ).then(function(task) {
+        return res.json({
             success: 'Task Details Listed Successfully',
             task: task
         });
     }).catch(error => {
         console.log("There was an error: " + error);
-        res.status(404).send(error);
+        return res.status(404).send(error);
     });
 };
 
