@@ -169,7 +169,19 @@
                         <td><%= task.id %></td>
                         <td><%= task.title %></td>
                         <td><%= task.duration %> Hour(s)</td>
-                        <td><span class="btn btn-label-primary btn-sm"><%= task.status %></span></td>
+                        <td>
+                            <% if (task.status == 'Backlog') { %>
+                            <span class="btn btn-label-primary btn-sm"><%= task.status %></span>
+                            <% }else if (task.status == 'Todo') %>
+                            <span class="btn btn-label-primary btn-sm"><%= task.status %></span>
+                            <% }else if (task.status == 'InProgress') %>
+                            <span class="btn btn-label-primary btn-sm"><%= task.status %></span>
+                            <% }else if (task.status == 'Review') %>
+                            <span class="btn btn-label-primary btn-sm"><%= task.status %></span>
+                            <% } else {%>
+                            <span class="btn btn-label-primary btn-sm"><%= task.status %></span>
+                            <% } %>
+                        </td>
                         <td><%= task.user.username %></td>
                         <td><%= moment(task.createdAt).fromNow() %></td>
                         <td><%= moment(task.updatedAt).fromNow() %></td>

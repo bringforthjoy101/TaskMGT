@@ -122,7 +122,7 @@ const authenticationMiddleware = (req, res, next) => {
 
     res.redirect('https://manifestusermodule.herokuapp.com/login');
 };
-// app.use( authenticationMiddleware );
+app.use( authenticationMiddleware );
 
 var authentication = require('./modules/authentication');
 
