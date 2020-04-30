@@ -109,6 +109,7 @@ License: You must have a valid license purchased only from https://themes.getboo
 		<script src="/assets/plugins/custom/datatables/datatables.bundle.js" type="text/javascript"></script>
 		<script src="/assets/js/pages/components/datatables/basic/scrollable.js" type="text/javascript"></script>
 		
+		
 		<% if ( sessionFlash && sessionFlash.message ) { %>
 		  <script>
 		
@@ -124,16 +125,16 @@ License: You must have a valid license purchased only from https://themes.getboo
 		          }
 		          })
 		
-		          Toast.fire({
-		          icon: '<%= sessionFlash.type %>',
-		          title: '<%= sessionFlash.message %>'
-		          })
+		          //Toast.fire({
+		          //icon: '<%= sessionFlash.type %>',
+		          //title: '<%= sessionFlash.message %>'
+		          //})
 		
-		      //     Swal.fire(
-		      //        '<%= sessionFlash.comment %>',
-		      //        '<%= sessionFlash.message %>',
-		      //        '<%= sessionFlash.type %>'
-		      //    )
+		           Swal.fire(
+		              '<%= sessionFlash.comment %>',
+		              '<%= sessionFlash.message %>',
+		              '<%= sessionFlash.type %>'
+		          )
 		  </script>
 		<% } %>
 

@@ -60,41 +60,31 @@ exports.board_create_post = [
     
     // Start processing requests
     async function (req, res, next) {
-        try {
-        const errors = validationResult(req);
-        if (errors) {
+        const result = validationResult(req);
+            var errors = result.errors;
+              for (var key in errors) {
+                    console.log(errors[key].value);
+              }
+        if (!result.isEmpty()) {
             var errorResponse = {
                 message: 'Validation error from form inputs',
                 title: 'Create Board',
-                errors: errors.array(), 
+                errors: errors, 
                 };
             return res.status(500).json({error: errorResponse });
-        }
-            models.Board.create({
-                board_name: req.body.board_name,
-                userId: req.body.employee_id,
-            }).then(function(board) {
-                    console.log("Board created successfully");
-                   // check if there was an error during post creation
-                    var displayData = {
-                        message: 'Board created successfully',
-                        board: board,
-                    };
-                    return res.status(200).json({success: displayData });
-                });
-        }
-        catch(err) {
-            console.log('The error log ' + err);
-            var catchResponse = {
-                devMessage: 'Error in Board Listing',
-                title: 'board Create Function',
-                fileLocation: 'controllers/api/boardController.js',
-                error: err,
-                message: err.message,
+        } else {
+    models.Board.create({
+        board_name: req.body.board_name,
+        userId: req.body.employee_id,
+    }).then(function(board) {
+            console.log("Board created successfully");
+           // check if there was an error during post creation
+            var displayData = {
+                message: 'Board created successfully',
+                board: board,
             };
-            return res.status(500).json({ 
-                error: catchResponse
-            });
+            return res.status(200).json({success: displayData });
+        });
         }
 }
 ];

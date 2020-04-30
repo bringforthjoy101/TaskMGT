@@ -71,31 +71,37 @@ exports.board_create_post = [
     
     // Start processing requests
     async function (req, res, next) {
-        try {
         
-    models.Board.create({
-        board_name: req.body.board_name,
-        userId: req.body.employee_id
-    }).then(function(board) {
-        // req.session.sessionFlash = {
-        //     type: 'success',
-        //     comment: 'Great!',
-        //     message: 'Board Created Successfully.'
-        // };
-        
-        console.log("Board created successfully");
-        req.session.success = true;
-        res.redirect('/todo/boards');
-  });
-        }
-        catch(err) {
-            const errors = validationResult(req);
-            if (errors) {
+            
+            const result = validationResult(req);
+            var errors = result.errors;
+              for (var key in errors) {
+                    console.log(errors[key].value);
+              }
+            if (!result.isEmpty()) {
+                console.log("This is the error message " + Object.values(errors));
                 req.session.errors = errors;
                 req.session.success = false;
-                res.redirect('/todo/boards');
+                return res.redirect('/todo/boards');
+            } else {
+                req.session.success = false;
+                models.Board.create({
+                    board_name: req.body.board_name,
+                    userId: req.body.employee_id
+                }).then(function(board) {
+                    req.session.sessionFlash = {
+                        type: 'success',
+                        comment: 'Great!',
+                        message: 'Board Created Successfully.'
+                    };
+                    
+                    console.log("Board created successfully");
+                    // req.session.success = true;
+                    return res.redirect('/todo/boards');
+              });
             }
-        }
+            // res.redirect('/todo/boards');
+        
 }
 ];
 
@@ -150,23 +156,22 @@ exports.board_list = function(req, res, next) {
                 },
             ]
         }).then(function(boards){
-
-            console.log("Board Listed successfully");
-   
           res.render('pages/index', {
               title: 'Dashboard',
               page: 'boardPage',
               display: 'boardDisplay',
               user: req.user,
-            //   sessionFlash: res.locals.sessionFlash,
+            //   success: false,
+              sessionFlash: res.locals.sessionFlash,
               errors: req.session.errors,
-              success:req.session.success,
+              success: req.session.success,
               moment: moment,
               boards: boards,
               userContents: 'this is board content',
               layout: 'layouts/main'
               
           });
+          console.log("Board Listed successfully");
           req.session.errors = null;
         });
 };

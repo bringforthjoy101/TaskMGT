@@ -52,7 +52,7 @@
         <div class="kt-portlet__body">
 			
 			<% if (errors) { %>
-                <% errors.errors.forEach(function(error){ %>
+                <% errors.forEach(function(error){ %>
         			<div class="alert alert-solid-danger alert-bold" role="alert">
                         <div class="alert-text"><%= error.msg %></div><br>
                         <div class="alert-close">
@@ -63,6 +63,7 @@
                     </div>
                 <% }); %>
             <% } %>
+            
             
             <!--begin: Datatable -->
             <% if (boards.length == 0) { %>
@@ -98,6 +99,7 @@
     </div>
     
 </div>
+
 
 <!-- end:: Content -->
 
