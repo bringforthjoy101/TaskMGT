@@ -211,7 +211,7 @@ exports.team_detail = async function(req, res, next) {
             tasks: tasks,
             teamName: teamName,
         };
-        console.log('this is ' + team.user.username);
+        // console.log('this is ' + team.user.username);
         console.log('Team Users Listed Successfully');
         // Successful, so render.
         return res.status(200).json({success: displayData });
