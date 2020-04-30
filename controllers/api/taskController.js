@@ -451,7 +451,7 @@ exports.task_todo = function (req, res) {
             console.log('Task Not Updated ');
             return res.status(500).json({ 
                 message: 'Operation failed',
-                error: 'Employe does not exist',
+                error: 'Employee does not exist',
             });
             
         }
@@ -489,7 +489,7 @@ exports.task_inprogress = function (req, res) {
             console.log('Task Not Updated ');
             return res.status(500).json({ 
                 message: 'Operation failed',
-                error: 'Employe does not exist',
+                error: 'Employee does not exist',
             });
         }
     });
@@ -522,7 +522,7 @@ exports.task_review = function (req, res) {
             console.log('Task Not Updated ');
             return res.status(500).json({ 
                 message: 'Operation failed',
-                error: 'Employe does not exist',
+                error: 'Employee does not exist',
             });
         }
     });
@@ -570,7 +570,7 @@ exports.task_done = async function (req, res) {
             console.log('Task Not Updated ');
             return res.status(500).json({ 
                 message: 'Operation failed',
-                error: 'Employe does not exist',
+                error: 'Employee does not exist',
             });
         }
     });
