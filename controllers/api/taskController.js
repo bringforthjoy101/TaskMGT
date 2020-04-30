@@ -99,12 +99,16 @@ exports.task_create_by_team_post = [
     async function(req, res, next) {
         let user_id = req.body.user_id;
     
-        const errors = validationResult(req);
-        if (errors) {
+        const result = validationResult(req);
+            var errors = result.errors;
+              for (var key in errors) {
+                    console.log(errors[key].value);
+              }
+        if (!result.isEmpty()) {
             var errorResponse = {
                 message: 'Validation error from form inputs',
                 title: 'Create Task',
-                errors: errors.array(), 
+                errors: errors, 
                 };
             return res.status(500).json({error: errorResponse });
         } 
@@ -112,23 +116,24 @@ exports.task_create_by_team_post = [
      // If the employee selected in the front end does not exist in DB return 400 error	
      if (!user_id) {
           return res.status(400);
-     }
+     } else {
      
-    models.Task.create({
-        title: req.body.title,
-        desc: req.body.desc,
-        duration: req.body.duration,
-        TeamId: req.body.team,
-        userId: req.body.user_id,
-        BoardId: req.body.board_id,
-    }).then(task => {
-        console.log("Board created successfully");
-        var displayData = {
-        message: 'Task created successfully',
-        task: task,
-    };
-    return res.status(200).json({success: displayData });
-    });
+        models.Task.create({
+            title: req.body.title,
+            desc: req.body.desc,
+            duration: req.body.duration,
+            TeamId: req.body.team,
+            userId: req.body.user_id,
+            BoardId: req.body.board_id,
+        }).then(function(task) {
+            console.log("Board created successfully");
+            var displayData = {
+            message: 'Task created successfully',
+            task: task,
+        };
+        return res.status(200).json({success: displayData });
+        });
+     }
 }
 ];
 
