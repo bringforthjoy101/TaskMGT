@@ -151,7 +151,7 @@ exports.task_update_post = function(req, res, next) {
     models.Task.update(
         // Values to update
         {
-            title: req.body.task_name,
+            title: req.body.title,
             duration: req.body.duration,
             desc: req.body.desc,
         }, { // Clause
