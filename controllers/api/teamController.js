@@ -25,59 +25,64 @@ exports.team_create_post = [
     sanitizeBody('employee').escape(),
     
     async function(req, res, next) {
-        const errors = validationResult(req);
-        if (errors) {
+        const result = validationResult(req);
+            var errors = result.errors;
+              for (var key in errors) {
+                    console.log(errors[key].value);
+              }
+        if (!result.isEmpty()) {
             var errorResponse = {
                 message: 'Validation error from form inputs',
                 title: 'Create Team',
-                errors: errors.array(), 
+                errors: errors, 
                 };
             return res.status(500).json({error: errorResponse });
+          } else {
+                const team = await models.Team.create({
+                    team_name: req.body.team_name,
+                    Employee_id: req.body.employee_id
+                });
+                
+                    console.log("The team is " + team);
+            
+                let employeeList = req.body.employees;
+            
+                // check the size of the employee list
+                console.log(employeeList.length);
+            
+            
+                // I am checking if only 1 employee has been selected
+                // if only one employee then use the simple case scenario
+                if (employeeList.length == 1) {
+                    // check if we have that employee in our database
+                    const employee = await models.user.findById(req.body.employees);
+                    if (!employee) {
+                    return res.status(400);
+                    }
+                    //otherwise add new entry inside TeamUsers table
+                    await team.addUser(employee);
+                }
+                // Ok now lets do for more than 1 employee, the hard bit.
+                // if more than one employee has been selected
+                else {
+                // Loop through all the ids in req.body.employees i.e. the selected employees
+                await req.body.employees.forEach(async (id) => {
+                    // check if all employee selected are in the database
+                    const employee = await models.user.findById(id);
+                    if (!employee) {
+                    return res.status(400);
+                    }
+                    // add to TeamUsers after
+                    await team.addUser(employee);
+                    });
+                }
+                console.log('Team created successfully');
+                var displayData = {
+                    message: 'Team created successfully',
+                    team: team,
+                };
+                return res.status(200).json({success: displayData });
           }
-    const team = await models.Team.create({
-        team_name: req.body.team_name,
-        Employee_id: req.body.employee_id
-    });
-    
-        console.log("The team is " + team);
-
-    let employeeList = req.body.employees;
-
-    // check the size of the employee list
-    console.log(employeeList.length);
-
-
-    // I am checking if only 1 employee has been selected
-    // if only one employee then use the simple case scenario
-    if (employeeList.length == 1) {
-        // check if we have that employee in our database
-        const employee = await models.user.findById(req.body.employees);
-        if (!employee) {
-        return res.status(400);
-        }
-        //otherwise add new entry inside TeamUsers table
-        await team.addUser(employee);
-    }
-    // Ok now lets do for more than 1 employee, the hard bit.
-    // if more than one employee has been selected
-    else {
-    // Loop through all the ids in req.body.employees i.e. the selected employees
-    await req.body.employees.forEach(async (id) => {
-        // check if all employee selected are in the database
-        const employee = await models.user.findById(id);
-        if (!employee) {
-        return res.status(400);
-        }
-        // add to TeamUsers after
-        await team.addUser(employee);
-        });
-    }
-    console.log('Team created successfully');
-    var displayData = {
-        message: 'Team created successfully',
-        team: team,
-    };
-    return res.status(200).json({success: displayData });
 }
 ];
 
