@@ -17,7 +17,7 @@ var team_controller = require('../controllers/teamController');
 router.post('/board/create', board_controller.board_create_post);
 
 // GET request to delete board.
-// router.get('/board/:board_id/delete', board_controller.board_delete_get);
+router.get('/board/:board_id/delete', board_controller.board_delete_get);
 
 // POST request to delete board.
 router.post('/board/:board_id/delete', board_controller.board_delete_post);
@@ -48,7 +48,7 @@ router.post('/task/create/user', task_controller.task_create_by_user_post);
 router.post('/task/create/team', task_controller.task_create_by_team_post);
 
 // GET request to delete task.
-// router.get('/task/:task_id/delete', task_controller.task_delete_get);
+router.get('/task/:task_id/delete', task_controller.task_delete_get);
 
 // POST request to delete task.
 router.post('/task/:task_id/delete', task_controller.task_delete_post);
@@ -95,7 +95,7 @@ router.get('/task/:task_id/:team_id/pick', task_controller.task_pick);
 router.post('/team/create', team_controller.team_create_post);
 
 // GET request to delete team.
-// router.get('/team/:team_id/delete', team_controller.team_delete_get);
+router.get('/team/:team_id/delete', team_controller.team_delete_get);
 
 // POST request to delete team.
 router.post('/team/:team_id/delete', team_controller.team_delete_post);

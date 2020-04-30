@@ -112,11 +112,27 @@ exports.board_delete_post = function(req, res, next) {
         where: {
             id: req.params.board_id
         }
-    }).then(() => res.json({
-        success: 'Board Deleted Successfully'
-    })).catch(error => {
-        res.status(404).send(error);
-    })
+    }).then(function() { 
+        res.redirect('/todo/boards');
+        console.log('Board Deleted Successfully');
+    });
+};
+
+// Handle board delete on GET.
+exports.board_delete_get = function(req, res, next) {
+    models.Board.destroy({
+        where: {
+            id: req.params.board_id
+        }
+    }).then(function(boards) { 
+        req.session.sessionFlash = {
+              type: 'success',
+              comment: 'Great!',
+              message: 'Board Deleted Successfully.'
+            };
+        console.log('Board Deleted Successfully');
+        res.redirect('/todo/boards');
+    });
 };
 
 exports.board_update_post = function(req, res, next) {
@@ -161,7 +177,6 @@ exports.board_list = function(req, res, next) {
               page: 'boardPage',
               display: 'boardDisplay',
               user: req.user,
-            //   success: false,
               sessionFlash: res.locals.sessionFlash,
               errors: req.session.errors,
               success: req.session.success,
@@ -244,12 +259,13 @@ exports.board_detail = async function(req, res, next) {
             tasks: tasks,
             teams: teams,
             user: req.user, // req.session.ret_data.data, //req.user,
+            sessionFlash: res.locals.sessionFlash,
             errors: req.session.errors,
             success: req.session.success,
             moment: moment,
             layout: 'layouts/detail'
         });
-        req.session.errors = null;
         console.log("Board Details Listed Successfully");
+        req.session.errors = null;
     });
 };

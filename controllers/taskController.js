@@ -37,8 +37,13 @@ exports.task_create_by_user_post = [
     let board_id = req.body.board_id;
     let user_id = req.body.user_id;
     
-    const errors = validationResult(req);
-        if (errors) {
+    const result = validationResult(req);
+        var errors = result.errors;
+          for (var key in errors) {
+                console.log(errors[key].value);
+          }
+        if (!result.isEmpty()) {
+            console.log("This is the error message " + Object.values(errors));
             req.session.errors = errors;
             req.session.success = false;
             res.redirect('/todo/board/' + board_id);
@@ -47,34 +52,24 @@ exports.task_create_by_user_post = [
      // If the employee selected in the front end does not exist in DB return 400 error	
      if (!user_id) {
           return res.status(400);
+     } else {
+        models.Task.create({
+            title: req.body.title,
+            desc: req.body.desc,
+            duration: req.body.duration,
+            Employee: req.body.employee,
+            userId: req.body.user_id,
+            BoardId: req.body.board_id,
+        }).then(function(task) {
+            req.session.sessionFlash = {
+                type: 'success',
+                comment: 'Great!',
+                message: 'Task Created Successfully.'
+            };
+            console.log("Task created successfully");
+            res.redirect('/todo/board/'+ board_id);
+        });
      }
-
-try {
-    models.Task.create({
-        title: req.body.title,
-        desc: req.body.desc,
-        duration: req.body.duration,
-        Employee: req.body.employee,
-        userId: req.body.user_id,
-        BoardId: req.body.board_id,
-    }).then(task => {
-        console.log("Board created successfully");
-        req.session.success = true;
-        res.redirect('/todo/board/'+ board_id);
-    })} 
-    catch(error) {
-        console.log(error);
-        console.log('The error log ' + error);
-            res.render('pages/error', {
-                title: 'Team List Error',
-                error: error,
-                user: req.user,
-                 page: 'errorPage',
-                display: 'dashboardDisplay',
-                message: error.message,
-                layout: 'layouts/detail'
-            });
-    }
 }
 ];
 
@@ -105,8 +100,13 @@ exports.task_create_by_team_post = [
         let board_id = req.body.board_id;
         let user_id = req.body.user_id;
     
-        const errors = validationResult(req);
-        if (errors) {
+        const result = validationResult(req);
+        var errors = result.errors;
+          for (var key in errors) {
+                console.log(errors[key].value);
+          }
+        if (!result.isEmpty()) {
+            console.log("This is the error message " + Object.values(errors));
             req.session.errors = errors;
             req.session.success = false;
             res.redirect('/todo/board/' + board_id);
@@ -115,9 +115,8 @@ exports.task_create_by_team_post = [
      // If the employee selected in the front end does not exist in DB return 400 error	
      if (!user_id) {
           return res.status(400);
-     }
+     } else {
 
-try {
     models.Task.create({
         title: req.body.title,
         desc: req.body.desc,
@@ -125,25 +124,16 @@ try {
         TeamId: req.body.team,
         userId: req.body.user_id,
         BoardId: req.body.board_id,
-    }).then(task => {
+    }).then(function(task) {
+        req.session.sessionFlash = {
+                type: 'success',
+                comment: 'Great!',
+                message: 'Task Created Successfully.'
+            };
         console.log("Board created successfully");
-        req.session.success = true;
         res.redirect('/todo/board/'+ board_id);
-    })} catch(error) {
-        console.log(error);
-        console.log('The error log ' + error);
-            // res.send(err); API
-            res.render('pages/error', {
-                title: 'Team List Error',
-                error: error,
-                user: req.user,
-                 page: 'errorPage',
-                display: 'dashboardDisplay',
-                message: error.message,
-                layout: 'layouts/detail'
-            });
-        
-    }
+    });
+     }
 }
 ];
 
@@ -153,11 +143,27 @@ exports.task_delete_post = function(req, res, next) {
         where: {
             id: req.params.task_id
         }
-    }).then(() => res.json({
-        success: 'Task Deleted Successfully'
-    })).catch(error => {
-        res.status(404).send(error);
-    })
+    }).then(function() { 
+        res.redirect('/todo/tasks');
+        console.log('Task Deleted Successfully');
+    });
+};
+
+// Handle task delete on POST.
+exports.task_delete_get = function(req, res, next) {
+    models.Task.destroy({
+        where: {
+            id: req.params.task_id
+        }
+    }).then(function(tasks) { 
+        req.session.sessionFlash = {
+              type: 'success',
+              comment: 'Great!',
+              message: 'Role Deleted Successfully.'
+            };
+        console.log('Task Deleted Successfully');
+        res.redirect('/todo/tasks');
+    });
 };
 
 // Handles task update on POST
@@ -212,11 +218,14 @@ exports.task_list = function(req, res, next) {
           page: 'taskPage',
           display: 'taskDisplay',
           user: req.user,
+          sessionFlash: res.locals.sessionFlash,
+          errors: req.session.errors,
+          success: req.session.success,
           moment: moment,
           tasks: tasks,
           layout: 'layouts/main'
-          
       });
+      req.session.errors = null;
     });
 };
 

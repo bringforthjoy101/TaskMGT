@@ -598,14 +598,14 @@ exports.task_pick = function (req, res) {
            models.Task.update(
           { startedAt: Date.now() },
         { where: { id: req.params.task_id } }
-      //   returning: true, where: {id: req.params.expense_id} 
+      //   returning: true, where: {id: req.params.task_id} 
        ).then(function(){
            const date = models.Task.findById(req.params.task_id);
             var sprint_date = moment(date.startedAt).add(14, 'days').format();
            models.Task.update(
           { sprintPeriod: sprint_date },
         { where: { id: req.params.task_id } }
-      //   returning: true, where: {id: req.params.expense_id} 
+      //   returning: true, where: {id: req.params.task_id} 
        ).then(function(){
             const date = models.Task.findById(req.params.task_id);
             var status = moment(date.startedAt).add(16, 'hours').format();
@@ -613,7 +613,7 @@ exports.task_pick = function (req, res) {
             models.Task.update(
               { dueAt: status },
             { where: { id: req.params.task_id } }
-          //   returning: true, where: {id: req.params.expense_id} 
+          //   returning: true, where: {id: req.params.task_id} 
            ).then(function(task){
         //check if employee id is present in the route
         if(team_id){
