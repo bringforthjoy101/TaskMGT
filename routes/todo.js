@@ -78,10 +78,10 @@ router.get('/tasks/pending', task_controller.task_list_pending);
 router.get('/tasks/completed', task_controller.task_list_completed);
 
 // Update task status 
-router.get('/task/:task_id/:employee/todo', task_controller.task_todo);
-router.get('/task/:task_id/:employee/inprogress', task_controller.task_inprogress);
-router.get('/task/:task_id/:employee/review', task_controller.task_review);
-router.get('/task/:task_id/:employee/done', task_controller.task_done);
+router.get('/task/:task_id/todo', task_controller.task_todo);
+router.get('/task/:task_id/inprogress', task_controller.task_inprogress);
+router.get('/task/:task_id/review', task_controller.task_review);
+router.get('/task/:task_id/done', task_controller.task_done);
 
 router.get('/task/:task_id/:team_id/pick', task_controller.task_pick);
 
