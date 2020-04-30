@@ -66,16 +66,16 @@ router.get('/task/:task_id', task_api_controller.task_detail);
 router.get('/tasks', task_api_controller.task_list);
 
 // GET request for list of all task.
-router.get('/myTasks', task_api_controller.task_list_employee);
+router.get('/myTasks/:employee', task_api_controller.task_list_employee);
 
 // GET request for list of all task.
-router.get('/tasks/active', task_api_controller.task_list_active);
+router.get('/tasks/:employee/active', task_api_controller.task_list_active);
 
 // GET request for list of all task.
-router.get('/tasks/pending', task_api_controller.task_list_pending);
+router.get('/tasks/:employee/pending', task_api_controller.task_list_pending);
 
 // GET request for list of all task.
-router.get('/tasks/completed', task_api_controller.task_list_completed);
+router.get('/tasks/:employee/completed', task_api_controller.task_list_completed);
 
 // Update task status 
 router.get('/task/:task_id/:employee/todo', task_api_controller.task_todo);
