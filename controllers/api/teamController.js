@@ -18,7 +18,7 @@ exports.team_create_post = [
     .isLength({ min: 2 }).withMessage('Team name must be at least 2 chars long')
     .custom(value => { return models.Team.findOne({ where: { team_name: value } })
     .then(team => { if (team) { return Promise.reject('Team Name Already Exists'); } }); }),
-    check('employee').isIn(['employee']).withMessage('Please, check at least one employee!'),
+    // check('employee').isIn(['employee']).withMessage('Please, check at least one employee!'),
     
     // Fields Sanitization
     sanitizeBody('team_name').escape(),
