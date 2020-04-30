@@ -590,7 +590,7 @@ exports.task_pick = function (req, res) {
   models.Task.update(
         {
             status: 'Todo',
-            Employee: req.body.username
+            Employee: req.params.employee
         },
         { where: { id: req.params.task_id } }
       //   returning: true, where: {id: req.params.task_id} 

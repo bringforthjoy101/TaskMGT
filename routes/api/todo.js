@@ -83,7 +83,7 @@ router.get('/task/:task_id/:employee/inprogress', task_api_controller.task_inpro
 router.get('/task/:task_id/:employee/review', task_api_controller.task_review);
 router.get('/task/:task_id/:employee/done', task_api_controller.task_done);
 
-router.get('/task/:task_id/:team_id/pick', task_api_controller.task_pick);
+router.get('/task/:task_id/:team_id/:employee/pick', task_api_controller.task_pick);
 
 
 /// TEAM ROUTES ///
