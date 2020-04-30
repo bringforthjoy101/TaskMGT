@@ -86,7 +86,7 @@
                         <td><a href="/todo/board/<%= board.id %>"><%= board.board_name %></a></td>
                         <td><%= board.user.username %></td>
                         <td><%= moment(board.createdAt).fromNow() %></td>
-                        <td nowrap><button type="button" class="btn btn-danger btn-elevate btn-icon btn-xs"><i class="la la-trash"></i></button></td>
+                        <td><a href="/todo/board/<%= board.id %>/delete" class="btn btn-danger btn-elevate btn-icon btn-xs"><i class="la la-trash"></i></a></td>
                     </tr>
                     <% }); %>
                 </tbody>
