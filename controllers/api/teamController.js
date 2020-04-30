@@ -191,6 +191,7 @@ exports.team_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
+              as: 'users',
               attributes: ['id', 'firstname', 'lastname', 'username', 'profile']
             },
         ]}
