@@ -191,15 +191,21 @@ exports.team_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              as: 'users',
               attributes: ['id', 'firstname', 'lastname', 'username', 'profile']
             },
         ]}
-        ).then(team => {
+        ).then(function (team)  {
+            if (team == null) { // No team with that id.
+            var err = new Error('team not found');
+            err.status = 404;
+            return res.status(404).json({ 
+                error: err
+            });
+        }
             var displayData = {
-            title: 'Board Details',
-            page: 'boardPage',
-            display: 'boardDetail',
+            title: 'Team Details',
+            page: 'teamPage',
+            display: 'teamDetail',
             team: team,
             tasks: tasks,
             teamName: teamName,
@@ -209,8 +215,5 @@ exports.team_detail = async function(req, res, next) {
         // Successful, so render.
         return res.status(200).json({success: displayData });
         
-    }).catch(error => {
-        console.log("There was an error: " + error);
-        res.status(404).send(error);
     });
 };
