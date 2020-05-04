@@ -150,8 +150,28 @@ exports.team_list = async function(req, res, next) {
         ]
     });
     
+    const myTeams = await models.user.findById(
+                req.user.id,
+                {
+                    include: [
+                     {
+                          model: models.Team,
+                          as: 'teams',
+                          required: false,
+                          // Pass in the Team attributes that you want to retrieve
+                          attributes: ['id', 'team_name', 'createdAt'],
+                          through: {
+                            // This block of code allows you to retrieve the properties of the join table TeamUsers
+                            model: models.TeamUsers,
+                            as: 'teamUsers',
+                            attributes: ['team_id', 'user_id'],
+                        }
+                    }
+                ]
+              }
+        );
     
-    models.Team.findAll({
+    models.user.findAll({
         order: [
             ['id', 'ASC'],
         ]
@@ -167,6 +187,7 @@ exports.team_list = async function(req, res, next) {
           success:req.session.success,
           moment: moment,
           teams: teams,
+          myTeams: myTeams,
           sessionFlash: res.locals.sessionFlash,
           layout: 'layouts/main'
       

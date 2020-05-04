@@ -76,7 +76,7 @@
             <% } %>
 
             <!--begin: Datatable -->
-            <% if (teams.length == 0) { %>
+            <% if (myTeams.teams.length == 0) { %>
                 <div class="kt-heading kt-heading--center">No Record Yet</div>
             <% } else { %>
             <table class="table table-striped- table-bordered table-hover" id="">
@@ -91,7 +91,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% teams.forEach(function(team) { %>
+                    <% myTeams.teams.forEach(function(team) { %>
                     <tr>
                         <td><%= team.id %></td>
                         <td><a href="/todo/team/<%= team.id %>"><%= team.team_name %></a></td>
