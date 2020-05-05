@@ -185,7 +185,7 @@
                         <td>
                             <ul class="list-group">
                                 <% if (user.profile !== 'staff') { %>
-                                    <% tasksTodoManager.forEach(function(task) { %>
+                                    <% tasksDoneManager.forEach(function(task) { %>
                                         <li class="list-group-item">
                                             <p><a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a></p>
                                             <p>Assigned to: <%= task.Employee %></p>

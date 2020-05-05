@@ -177,7 +177,7 @@ exports.board_list = function(req, res, next) {
             include: [
                 {
                   model: models.user,
-                  attributes: ['id', 'firstname', 'lastname', 'username']
+                  attributes: ['id', 'firstname', 'lastname', 'username', 'name']
                 },
             ]
         }).then(function(boards){
@@ -221,7 +221,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -238,7 +238,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -255,7 +255,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -272,7 +272,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -289,7 +289,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -306,7 +306,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -323,7 +323,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -340,7 +340,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -357,7 +357,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -374,7 +374,7 @@ exports.board_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
               model: models.Team,
@@ -390,7 +390,7 @@ exports.board_detail = async function(req, res, next) {
                 include: [
                     {
                       model: models.user,
-                      attributes: ['id', 'firstname', 'lastname', 'username']
+                      attributes: ['id', 'firstname', 'lastname', 'username', 'name']
                     },
                 ]
             }    

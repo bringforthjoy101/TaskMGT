@@ -141,7 +141,7 @@ exports.task_list = function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
                 model: models.Board,
@@ -175,7 +175,7 @@ exports.task_list_employee = function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
                 model: models.Board,
@@ -206,7 +206,7 @@ exports.task_list_active = function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
                 model: models.Board,
@@ -237,7 +237,7 @@ exports.task_list_pending = function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
                 model: models.Board,
@@ -269,7 +269,7 @@ exports.task_list_completed = function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
             },
             {
                 model: models.Board,
@@ -326,7 +326,7 @@ exports.task_detail = async function(req, res, next) {
             include: [
                     {
                       model: models.user,
-                      attributes: ['id', 'firstname', 'lastname', 'username']
+                      attributes: ['id', 'firstname', 'lastname', 'username', 'name']
                     },
                     {
                       model: models.Board,

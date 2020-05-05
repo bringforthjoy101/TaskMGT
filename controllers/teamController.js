@@ -178,7 +178,7 @@ exports.team_list = async function(req, res, next) {
     }).then(function(teams){
 
     res.render('pages/index', {
-          title: 'Dashboard',
+          title: 'Teams',
           page: 'teamPage',
           display: 'teamDisplay',
           employees: employees,
@@ -210,7 +210,7 @@ exports.team_detail = async function(req, res, next) {
         include: [
             {
               model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username', 'profile']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'profile', 'name']
             },
             {
               model: models.Team,
@@ -218,6 +218,27 @@ exports.team_detail = async function(req, res, next) {
             }
         ]
     });
+    
+    const teamBoards = await models.Team.findById(
+            req.params.team_id,
+            {
+                include: [
+                 {
+                      model: models.Board,
+                      as: 'boards',
+                      required: false,
+                      // Pass in the Team attributes that you want to retrieve
+                      attributes: ['id', 'board_name', 'userId', 'createdAt'],
+                      through: {
+                        // This block of code allows you to retrieve the properties of the join table TeamUsers
+                        model: models.TeamBoards,
+                        as: 'teamBoards',
+                        attributes: ['team_id', 'board_id'],
+                    }
+                }
+            ]
+          }
+    );
     
     
     
@@ -232,7 +253,7 @@ exports.team_detail = async function(req, res, next) {
             include: [
                 {
                   model: models.user,
-                  attributes: ['id', 'firstname', 'lastname', 'username']
+                  attributes: ['id', 'firstname', 'lastname', 'username', 'name']
                 },
             ]
         });
@@ -243,7 +264,7 @@ exports.team_detail = async function(req, res, next) {
             {
               model: models.user,
               as: 'users',
-              attributes: ['id', 'firstname', 'lastname', 'username', 'profile']
+              attributes: ['id', 'firstname', 'lastname', 'username', 'profile', 'name']
             },
         ]}
         ).then(team => {
@@ -255,6 +276,7 @@ exports.team_detail = async function(req, res, next) {
             tasks: tasks,
             boards: boards,
             teamName: teamName,
+            teamBoards: teamBoards,
             user: req.user, // req.session.ret_data.data,
             moment: moment,
             layout: 'layouts/detail'

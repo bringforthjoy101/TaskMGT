@@ -54,40 +54,42 @@
 									<div class="kt-portlet__head-toolbar">
 						                <div class="kt-portlet__head-toolbar">
 						                    <div class="dropdown dropdown-inline">
-						                        <button type="button" class="btn btn-brand btn-brand btn-upper btn-bold" data-toggle="modal" data-target="#exampleModal">Create New Board</button>
-						                        <!-- Modal -->
-						                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-						                                <div class="modal-dialog" role="document">
-						                                    <div class="modal-content">
-						                                        <div class="modal-header">
-						                                            <h5 class="modal-title" id="exampleModalLabel">Create a new Board</h5>
-						                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						                                                <span aria-hidden="true">&times;</span>
-						                                            </button>
-						                                        </div>
-						                                        <div class="modal-body">
-						                                            <form action="/todo/board/create" method="post" class="kt-form" >
-						                                                <div class="kt-portlet__body">
-						                                                    <div class="kt-section kt-section--first">
-						                                                        <div class="form-group">
-						                                                            <label>Board Name:</label>
-						                                                            <input type="text" name="board_name" class="form-control" placeholder="Enter Board Name">
-						                                                            <input hidden type="text" name="team_id" class="form-control" value="<%= team.id %>">
-						                                                            <input hidden type="text" name="employee_id" class="form-control" value="<%= user.id %>">
-						                                                        </div>
-						                                                    </div>
-						                                                </div>
-						                                                <div class="modal-footer">
-						                                                    <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
-						                                                    <Input type="submit" class="btn btn-brand" value="Create">
-						                                                </div>
-						                                            </form>
-						                                        </div>
-						                                        
-						                                        
-						                                    </div>
-						                                </div>
-						                            </div>
+						                    	<% if (user.profile !== 'staff') { %>
+							                        <button type="button" class="btn btn-brand btn-brand btn-upper btn-bold" data-toggle="modal" data-target="#exampleModal">Create New Board</button>
+							                        <!-- Modal -->
+							                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							                                <div class="modal-dialog" role="document">
+							                                    <div class="modal-content">
+							                                        <div class="modal-header">
+							                                            <h5 class="modal-title" id="exampleModalLabel">Create a new Board</h5>
+							                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							                                                <span aria-hidden="true">&times;</span>
+							                                            </button>
+							                                        </div>
+							                                        <div class="modal-body">
+							                                            <form action="/todo/board/create" method="post" class="kt-form" >
+							                                                <div class="kt-portlet__body">
+							                                                    <div class="kt-section kt-section--first">
+							                                                        <div class="form-group">
+							                                                            <label>Board Name:</label>
+							                                                            <input type="text" name="board_name" class="form-control" placeholder="Enter Board Name">
+							                                                            <input hidden type="text" name="team_id" class="form-control" value="<%= team.id %>">
+							                                                            <input hidden type="text" name="employee_id" class="form-control" value="<%= user.id %>">
+							                                                        </div>
+							                                                    </div>
+							                                                </div>
+							                                                <div class="modal-footer">
+							                                                    <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
+							                                                    <Input type="submit" class="btn btn-brand" value="Create">
+							                                                </div>
+							                                            </form>
+							                                        </div>
+							                                        
+							                                        
+							                                    </div>
+							                                </div>
+							                            </div>
+						                            <% } %>
 						                    </div>
 						                </div>
 						            </div>
@@ -103,19 +105,22 @@
 						                    <tr>
 						                        <th>id</th>
 						                        <th>Board Name</th>
-						                        <th>Created By</th>
 						                        <th>Time Created</th>
+						                        <% if (user.profile !== 'staff') { %>
 						                        <th>Actions</th>
+						                        <% } %>
 						                    </tr>
 						                </thead>
 						                <tbody>
-						                    <% boards.forEach(function(board) { %>
+						                    <% teamBoards.boards.forEach(function(board) { %>
 						                    <tr>
 						                        <td><%= board.id %></td>
 						                        <td><a href="/todo/team/<%= team.id %>/board/<%= board.id %>"><%= board.board_name %></a></td>
-						                        <td><%= board.user.username %></td>
+						                        
 						                        <td><%= moment(board.createdAt).fromNow() %></td>
+						                        <% if (user.profile !== 'staff') { %>
 						                        <td><a href="/todo/team/<%= team.id %>/board/<%= board.id %>/delete" class="btn btn-danger btn-elevate btn-icon btn-xs"><i class="la la-trash"></i></a></td>
+						                    	<% } %>
 						                    </tr>
 						                    <% }); %>
 						                </tbody>

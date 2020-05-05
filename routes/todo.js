@@ -6,6 +6,8 @@ var router = express.Router();
 var board_controller = require('../controllers/boardController');
 var task_controller = require('../controllers/taskController');
 var team_controller = require('../controllers/teamController');
+var employee_controller = require('../controllers/employeeController');
+var department_controller = require('../controllers/departmentController');
 
 
 /// BOARD ROUTES ///
@@ -109,6 +111,12 @@ router.get('/team/:team_id', team_controller.team_detail);
 
 // GET request for list of all team.
 router.get('/teams', team_controller.team_list);
+
+// GET request for list of all users in a department.
+router.get('/department/:department_name', department_controller.department_users);
+
+// GET request for list of all Employees.
+router.get('/employees', employee_controller.employees);
 
 
 
