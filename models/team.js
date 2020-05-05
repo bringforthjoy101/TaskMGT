@@ -14,6 +14,13 @@ module.exports = (sequelize, DataTypes) => {
           through: 'TeamUsers',
           foreignKey: 'team_id'
       });
+      
+    models.Team.belongsToMany(models.Board, 
+      { 
+          as: 'boards',
+          through: 'TeamBoards',
+          foreignKey: 'team_id'
+      });
   };
 
   return Team;

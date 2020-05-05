@@ -10,71 +10,9 @@ exports.index = function(req, res, next) {
     });
 };
 
-// Handle task by users create on POST.
-exports.task_create_by_user_post = [
-    
-    // fields Validtion
-    check('title')
-    .not().isEmpty().withMessage('Title is required')
-    .isLength({ min: 2 }).withMessage('Title must be at least 2 chars long')
-    .custom(value => { return models.Task.findOne({ where: { title: value } })
-    .then(task => { if (task) { return Promise.reject('Task Already Exists'); } }); }),
-    check('desc').not().isEmpty().withMessage('Description is required'),
-    check('duration').not().isEmpty().withMessage('Duration is required').isInt().withMessage('Duration must be an integer'),
-    check('employee').not().isEmpty().withMessage('Employee is required').isAlpha().withMessage('must be letters'),
-    check('user_id').not().isEmpty().withMessage('User ID is required').isInt().withMessage('User ID must be an integer'),
-    check('board_id').not().isEmpty().withMessage('Board ID is required').isInt().withMessage('Board ID must be an integer'),
-    
-    // Fields Sanitization
-    sanitizeBody('title').escape(),
-    sanitizeBody('desc').escape(),
-    sanitizeBody('duration').escape(),
-    sanitizeBody('employee').escape(),
-    sanitizeBody('user_id').escape(),
-    sanitizeBody('board_id').escape(),
-    
-    async function(req, res, next) {
-    let board_id = req.body.board_id;
-    let user_id = req.body.user_id;
-    
-    const result = validationResult(req);
-        var errors = result.errors;
-          for (var key in errors) {
-                console.log(errors[key].value);
-          }
-        if (!result.isEmpty()) {
-            console.log("This is the error message " + Object.values(errors));
-            req.session.errors = errors;
-            req.session.success = false;
-            res.redirect('/todo/board/' + board_id);
-        }
-     
-     // If the employee selected in the front end does not exist in DB return 400 error	
-     if (!user_id) {
-          return res.status(400);
-     } else {
-        models.Task.create({
-            title: req.body.title,
-            desc: req.body.desc,
-            duration: req.body.duration,
-            Employee: req.body.employee,
-            userId: req.body.user_id,
-            BoardId: req.body.board_id,
-        }).then(function(task) {
-            req.session.sessionFlash = {
-                type: 'success',
-                comment: 'Great!',
-                message: 'Task Created Successfully.'
-            };
-            console.log("Task created successfully");
-            res.redirect('/todo/board/'+ board_id);
-        });
-     }
-}
-];
 
 // Handle task create on POST.
-exports.task_create_by_team_post = [
+exports.task_create_post = [
     
     // fields Validtion
     check('title')
@@ -84,7 +22,7 @@ exports.task_create_by_team_post = [
     .then(task => { if (task) { return Promise.reject('Task Already Exists'); } }); }),
     check('desc').not().isEmpty().withMessage('Description is required'),
     check('duration').not().isEmpty().withMessage('Duration is required').isInt().withMessage('Duration must be an integer'),
-    check('team').not().isEmpty().withMessage('Team is required').isInt().withMessage('Team ID must be an integer'),
+    check('team_id').not().isEmpty().withMessage('Team is required').isInt().withMessage('Team ID must be an integer'),
     check('user_id').not().isEmpty().withMessage('User ID is required').isInt().withMessage('User ID must be an integer'),
     check('board_id').not().isEmpty().withMessage('Board ID is required').isInt().withMessage('Board ID must be an integer'),
     
@@ -92,13 +30,14 @@ exports.task_create_by_team_post = [
     sanitizeBody('title').escape(),
     sanitizeBody('desc').escape(),
     sanitizeBody('duration').escape(),
-    sanitizeBody('team').escape(),
+    sanitizeBody('team_id').escape(),
     sanitizeBody('user_id').escape(),
     sanitizeBody('board_id').escape(),
     
     async function(req, res, next) {
         let board_id = req.body.board_id;
         let user_id = req.body.user_id;
+        let team_id = req.body.team_id;
     
         const result = validationResult(req);
         var errors = result.errors;
@@ -121,7 +60,7 @@ exports.task_create_by_team_post = [
         title: req.body.title,
         desc: req.body.desc,
         duration: req.body.duration,
-        TeamId: req.body.team,
+        TeamId: req.body.team_id,
         userId: req.body.user_id,
         BoardId: req.body.board_id,
     }).then(function(task) {
@@ -130,8 +69,8 @@ exports.task_create_by_team_post = [
                 comment: 'Great!',
                 message: 'Task Created Successfully.'
             };
-        console.log("Board created successfully");
-        res.redirect('/todo/board/'+ board_id);
+        console.log("Task created successfully");
+        res.redirect('/todo/team/' + team_id + '/board/' + board_id);
     });
      }
 }
@@ -408,6 +347,8 @@ exports.task_todo = function (req, res) {
  
   let task_id = req.params.task_id;
   let employee_id = req.user.id;
+  let team_id = req.params.team_id;
+  let board_id = req.params.board_id;
   
   
   console.log("The task id is not null " + task_id);
@@ -477,16 +418,17 @@ exports.task_todo = function (req, res) {
         if(employee_id){
             // req.session.sessionFlash = {
             //     type: 'success',
+            //     comment: 'Great!',
             //     message: 'Expense Approved Successfully.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Updated to todo');
         } else {
             // req.session.sessionFlash = {
             //     type: 'error',
             //     message: 'Oops, Something went wrong.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Not Updated ');
         }
     });
@@ -501,6 +443,8 @@ exports.task_inprogress = function (req, res) {
  
   let task_id = req.params.task_id;
   let employee_id = req.user.id;
+  let team_id = req.params.team_id;
+  let board_id = req.params.board_id;
   
   
   console.log("The task id is not null " + task_id);
@@ -526,14 +470,14 @@ exports.task_inprogress = function (req, res) {
             //     type: 'success',
             //     message: 'Expense Approved Successfully.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Updated ');
         } else {
             // req.session.sessionFlash = {
             //     type: 'error',
             //     message: 'Oops, Something went wrong.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Not Updated ');
         }
     });
@@ -545,6 +489,8 @@ exports.task_review = function (req, res) {
  
   let task_id = req.params.task_id;
   let employee_id = req.user.id;
+  let team_id = req.params.team_id;
+  let board_id = req.params.board_id;
   
   
   console.log("The task id is not null " + task_id);
@@ -570,14 +516,14 @@ exports.task_review = function (req, res) {
             //     type: 'success',
             //     message: 'Expense Approved Successfully.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Updated to review ');
         } else {
             // req.session.sessionFlash = {
             //     type: 'error',
             //     message: 'Oops, Something went wrong.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Not Updated ');
         }
     });
@@ -589,7 +535,8 @@ exports.task_done = async function (req, res) {
  
   let task_id = req.params.task_id;
   let employee_id = req.user.id;
-//   const thisTask = await models.Task.findById(task_id);
+  let team_id = req.params.team_id;
+  let board_id = req.params.board_id;
   
   console.log("The task id is not null " + task_id);
   
@@ -648,14 +595,14 @@ exports.task_done = async function (req, res) {
             //     type: 'success',
             //     message: 'Expense Approved Successfully.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Updated to Done ');
         } else {
             // req.session.sessionFlash = {
             //     type: 'error',
             //     message: 'Oops, Something went wrong.'
             //   }
-            res.redirect("/todo/tasks");
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
             console.log('Task Not Updated ');
         }
     });
@@ -670,6 +617,7 @@ exports.task_pick = function (req, res) {
   let task_id = req.params.task_id;
   let employee_id = req.user.id;
   let team_id = req.params.team_id;
+  let board_id = req.params.board_id;
   
   
   console.log("The task id is not null " + task_id);
@@ -701,7 +649,7 @@ exports.task_pick = function (req, res) {
                   id: req.params.task_id
               }
           }
-      //   returning: true, where: {id: req.params.expense_id} 
+      //   returning: true, where: {id: req.params.task_id} 
        ).then(function(){
            const date = models.Task.findById(req.params.task_id);
             var sprint_date = moment(date.startedAt).add(14, 'days').format();
@@ -742,14 +690,16 @@ exports.task_pick = function (req, res) {
             //     type: 'success',
             //     message: 'Expense Approved Successfully.'
             //   }
-            res.redirect("/todo/team/" + team_id);
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
+            // res.redirect("/todo/team/" + team_id);
             console.log('Task Updated to todo');
         } else {
             // req.session.sessionFlash = {
             //     type: 'error',
             //     message: 'Oops, Something went wrong.'
             //   }
-            res.redirect("/todo/team/" + team_id);
+            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
+            // res.redirect("/todo/team/" + team_id);
             console.log('Task Not Updated ');
         }
     });

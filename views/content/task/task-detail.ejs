@@ -12,26 +12,148 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-toolbar">
                     <div class="dropdown dropdown-inline">
+                    	<a href="" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Assign</a>
                         
                     </div>
                 </div>
             </div>
         </div>
         <div class="kt-portlet__body">
+            <div class="kt-widget-5">
+                <div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Task Title
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.title %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Description
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.desc %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Duration
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.duration %> hour(s)
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Assigned To
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.Employee || 'N/A' %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Task Status
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.status %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Task Board
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.Board.board_name %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Assigned By
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.user.username %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Time Started
+						</a>
+						<div class="kt-widget-5__item-datetime">
+						    <% if (task.startedAt !== null) { %>
+							<%= moment(task.startedAt).calendar() %>
+							<% } else { %>
+							Date not set yet
+							<% } %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Time Due
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<% if (task.dueAt !== null) { %>
+							<%= moment(task.dueAt).calendar() %>
+							<% } else { %>
+							Date not set yet
+							<% } %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Team
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.Team.team_name %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Sprint
+						</a>
+						<div class="kt-widget-5__item-datetime">
+							<%= task.sprint || 'N/A' %>
+						</div>
+					</div>
+				</div>
+				<div class="kt-widget-5__item kt-widget-5__item--info">
+					<div class="kt-widget-5__item-info">
+						<a href="#" class="kt-widget-5__item-title">
+							Sprint Period
+						</a>
+						<div class="kt-widget-5__item-datetime">
+						    <% if (task.sprintPeriod !== null) { %>
+							<%= moment(task.sprintPeriod).format("dddd, MMMM Do YYYY, h:mm:ss a") %>
+							<% } else { %>
+							Date not set yet
+							<% } %>
+						</div>
+					</div>
+				</div>
+            </div>
             
-            
-            Title: <%= task.title %> <br>
-            Description: <%= task.desc %> <br>
-            Duration: <%= task.duration %> Hour(s) <br>
-            Assigned to: <%= task.Employee %> <br>
-            Task Status: <%= task.status %> <br>
-            Task Board: <%= task.Board.board_name %> <br>
-            Assigned By: <%= task.user.username %> <br>
-            Time started: <%= moment(task.startedAt).calendar() %> <br>
-            Time Due: <%= moment(task.dueAt).calendar() %> <br>
-            Team:  <%= task.Team.team_name %> <br>
-            Sprint: <%= task.sprint %> Days <br>
-            Sprint Period: <%= moment(task.sprintPeriod).format("dddd, MMMM Do YYYY, h:mm:ss a") %> <br>
 
         </div>
         

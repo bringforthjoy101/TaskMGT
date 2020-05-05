@@ -62,8 +62,8 @@ exports.board_create_post = [
     .isLength({ min: 2 }).withMessage('Board Name must be at least 2 chars long')
     .custom(value => { return models.Board.findOne({ where: { board_name: value } })
     .then(board => { if (board) { return Promise.reject('Board Name Already Exists'); } }); }),
-    check('employee_id')
-    .not().isEmpty().withMessage('Employee is required'),
+    check('employee_id').not().isEmpty().withMessage('Employee is required'),
+    check('team_id').not().isEmpty().withMessage('Team is required'),
     
     // Fields Sanitization
     sanitizeBody('board_name').escape(),
@@ -71,7 +71,7 @@ exports.board_create_post = [
     
     // Start processing requests
     async function (req, res, next) {
-        
+        let team_id = req.body.team_id;
             
             const result = validationResult(req);
             var errors = result.errors;
@@ -82,13 +82,21 @@ exports.board_create_post = [
                 console.log("This is the error message " + Object.values(errors));
                 req.session.errors = errors;
                 req.session.success = false;
-                return res.redirect('/todo/boards');
+                return res.redirect('/todo/team/' + team_id);
             } else {
                 req.session.success = false;
-                models.Board.create({
+                const board = await models.Board.create({
                     board_name: req.body.board_name,
                     userId: req.body.employee_id
-                }).then(function(board) {
+                });
+                
+                const team = await models.Team.findById(req.body.team_id);
+                if (!team) {
+                return res.status(400);
+                }
+                //otherwise add new entry inside TeamUsers table
+                await board.addTeam(team);
+                
                     req.session.sessionFlash = {
                         type: 'success',
                         comment: 'Great!',
@@ -97,8 +105,8 @@ exports.board_create_post = [
                     
                     console.log("Board created successfully");
                     // req.session.success = true;
-                    return res.redirect('/todo/boards');
-              });
+                    return res.redirect('/todo/team/' + team_id);
+             
             }
             // res.redirect('/todo/boards');
         
@@ -108,12 +116,13 @@ exports.board_create_post = [
 
 // Handle author delete on POST.
 exports.board_delete_post = function(req, res, next) {
+    let team_id = req.params.team_id;
     models.Board.destroy({
         where: {
             id: req.params.board_id
         }
     }).then(function() { 
-        res.redirect('/todo/boards');
+        res.redirect('/todo/team/' + team_id);
         console.log('Board Deleted Successfully');
     });
 };
@@ -205,9 +214,7 @@ exports.board_detail = async function(req, res, next) {
     });
 
     const tasks = await models.Task.findAll({
-        where: {
-          BoardId: req.params.board_id,
-        },
+        where: { BoardId: req.params.board_id },
         order: [
             ['title', 'ASC'],
         ],
@@ -223,14 +230,92 @@ exports.board_detail = async function(req, res, next) {
         ]
     });
     
-    const teams = await models.Team.findAll({
-        where: {
-          Employee_id: req.user.id,
-        },
+    const tasksBacklog = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'Backlog' },
         order: [
-            ['id', 'ASC'],
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
         ]
     });
+    
+    const tasksTodo = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'Todo' },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const tasksInProgress = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'InProgress' },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const tasksReview = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'Review' },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const tasksDone = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'Done' },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const team = await models.Team.findById(req.params.team_id);
 
     models.Board.findById(
             req.params.board_id, {
@@ -257,7 +342,12 @@ exports.board_detail = async function(req, res, next) {
             board: the_board,
             board_id: board_id,
             tasks: tasks,
-            teams: teams,
+            tasksBacklog: tasksBacklog,
+            tasksTodo: tasksTodo,
+            tasksInProgress: tasksInProgress,
+            tasksReview: tasksReview,
+            tasksDone: tasksDone,
+            team: team,
             user: req.user, // req.session.ret_data.data, //req.user,
             sessionFlash: res.locals.sessionFlash,
             errors: req.session.errors,

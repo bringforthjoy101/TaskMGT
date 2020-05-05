@@ -17,10 +17,10 @@ var team_controller = require('../controllers/teamController');
 router.post('/board/create', board_controller.board_create_post);
 
 // GET request to delete board.
-router.get('/board/:board_id/delete', board_controller.board_delete_get);
+router.get('/team/:team_id/board/:board_id/delete', board_controller.board_delete_get);
 
 // POST request to delete board.
-router.post('/board/:board_id/delete', board_controller.board_delete_post);
+router.post('/team/:team_id/board/:board_id/delete', board_controller.board_delete_post);
 
 // GET request to update board.
 // router.get('/board/:board_id/update', board_controller.board_update_get);
@@ -29,7 +29,7 @@ router.post('/board/:board_id/delete', board_controller.board_delete_post);
 router.post('/board/:board_id/update', board_controller.board_update_post);
 
 // GET request for one board.
-router.get('/board/:board_id', board_controller.board_detail);
+router.get('/team/:team_id/board/:board_id', board_controller.board_detail);
 
 // GET request for list of all board.
 router.get('/boards', board_controller.board_list);
@@ -41,11 +41,9 @@ router.get('/boards', board_controller.board_list);
 // GET request for creating tasks. NOTE This must come before route for id (i.e. display task).
 // router.get('/tasks/create', task_controller.board_create_get);
 
-// POST request for creating task.
-router.post('/task/create/user', task_controller.task_create_by_user_post);
 
 // POST request for creating task.
-router.post('/task/create/team', task_controller.task_create_by_team_post);
+router.post('/task/create/', task_controller.task_create_post);
 
 // GET request to delete task.
 router.get('/task/:task_id/delete', task_controller.task_delete_get);
@@ -79,11 +77,11 @@ router.get('/tasks/completed', task_controller.task_list_completed);
 
 // Update task status 
 router.get('/task/:task_id/todo', task_controller.task_todo);
-router.get('/task/:task_id/inprogress', task_controller.task_inprogress);
-router.get('/task/:task_id/review', task_controller.task_review);
-router.get('/task/:task_id/done', task_controller.task_done);
+router.get('/task/:team_id/:board_id/:task_id/inprogress', task_controller.task_inprogress);
+router.get('/task/:team_id/:board_id/:task_id/review', task_controller.task_review);
+router.get('/task/:team_id/:board_id/:task_id/done', task_controller.task_done);
 
-router.get('/task/:task_id/:team_id/pick', task_controller.task_pick);
+router.get('/task/:team_id/:board_id/:task_id/pick', task_controller.task_pick);
 
 
 /// TEAM ROUTES ///

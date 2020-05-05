@@ -51,61 +51,76 @@
 											<%= teamName.team_name %>'s Tasks
 										</h3>
 									</div>
+									<div class="kt-portlet__head-toolbar">
+						                <div class="kt-portlet__head-toolbar">
+						                    <div class="dropdown dropdown-inline">
+						                        <button type="button" class="btn btn-brand btn-brand btn-upper btn-bold" data-toggle="modal" data-target="#exampleModal">Create New Board</button>
+						                        <!-- Modal -->
+						                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						                                <div class="modal-dialog" role="document">
+						                                    <div class="modal-content">
+						                                        <div class="modal-header">
+						                                            <h5 class="modal-title" id="exampleModalLabel">Create a new Board</h5>
+						                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						                                                <span aria-hidden="true">&times;</span>
+						                                            </button>
+						                                        </div>
+						                                        <div class="modal-body">
+						                                            <form action="/todo/board/create" method="post" class="kt-form" >
+						                                                <div class="kt-portlet__body">
+						                                                    <div class="kt-section kt-section--first">
+						                                                        <div class="form-group">
+						                                                            <label>Board Name:</label>
+						                                                            <input type="text" name="board_name" class="form-control" placeholder="Enter Board Name">
+						                                                            <input hidden type="text" name="team_id" class="form-control" value="<%= team.id %>">
+						                                                            <input hidden type="text" name="employee_id" class="form-control" value="<%= user.id %>">
+						                                                        </div>
+						                                                    </div>
+						                                                </div>
+						                                                <div class="modal-footer">
+						                                                    <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
+						                                                    <Input type="submit" class="btn btn-brand" value="Create">
+						                                                </div>
+						                                            </form>
+						                                        </div>
+						                                        
+						                                        
+						                                    </div>
+						                                </div>
+						                            </div>
+						                    </div>
+						                </div>
+						            </div>
 								</div>
 								<div class="kt-portlet__body">
 
 									<!--begin: Datatable -->
-									<table class="table table-striped- table-bordered table-hover table-checkable" id="">
-										<thead>
-											<tr>
-												<th>ID</th>
-						                        <th>Task Title</th>
-						                        <th>Duration</th>
-						                        <th>Status</th>
+									<% if (boards.length == 0) { %>
+						                <div class="kt-heading kt-heading--center">No Board on this team yet</div>
+						            <% } else { %>
+						            <table class="table table-striped- table-bordered table-hover" id="">
+						                <thead>
+						                    <tr>
+						                        <th>id</th>
+						                        <th>Board Name</th>
 						                        <th>Created By</th>
 						                        <th>Time Created</th>
-						                        <th>Last Modified</th>
-						                        <th>Assigned To</th>
-						                        <th>Action</th>
-											</tr>
-										</thead>
-										<tbody>
-											<% tasks.forEach(function(task) { %>
-											<tr>
-												<td><%= task.id %></td>
-						                        <td><%= task.title %></td>
-						                        <td><%= task.duration %> Hour(s)</td>
-						                        <td><span class="btn btn-label-primary btn-sm"><%= task.status %></span></td>
-						                        <td><%= task.user.username %></td>
-						                        <td><%= moment(task.createdAt).fromNow() %></td>
-						                        <td><%= moment(task.updatedAt).fromNow() %></td>
-						                        <% if (task.Employee == null) { %>
-						                        <td><%= task.Team.team_name %></td>
-						                        <% } else { %>
-						                        <td><%= task.Employee %></td>
-						                        <% } %>
-						                        <td>
-						                        	<div class="dropdown dropdown-inline">
-					        							<button type="button" class="btn btn-hover-brand btn-elevate-hover btn-icon btn-sm btn-icon-md btn-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					        								<i class="flaticon-more-1"></i>
-					        							</button>
-					    							<div class="dropdown-menu dropdown-menu-right">
-					    								<% if (task.Employee == null) { %>
-					    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/<%= team.id %>/pick"><i class="la la-plus"></i> Pick up</a>
-					    								<% } else { %>
-					    								<a class="dropdown-item " href="/todo/task/<%= task.id %>/<%= task.employee %>/todo"><i class="la la-plus"></i> Todo</a>
-					    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/<%= task.employee %>/inprogress"><i class="la la-user"></i> InProgress</a>
-					    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/<%= task.employee %>/review"><i class="la la-cloud-download"></i> Review</a>
-					    								<div class="dropdown-divider"></div>
-					    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/<%= task.employee %>/done"><i class="la la-cog"></i> Done</a>
-					    								<% } %>
-					    							</div>
-											    </div>
-						                        </td>
-											</tr>
-											<% }); %>
-										</tbody>
-									</table>
+						                        <th>Actions</th>
+						                    </tr>
+						                </thead>
+						                <tbody>
+						                    <% boards.forEach(function(board) { %>
+						                    <tr>
+						                        <td><%= board.id %></td>
+						                        <td><a href="/todo/team/<%= team.id %>/board/<%= board.id %>"><%= board.board_name %></a></td>
+						                        <td><%= board.user.username %></td>
+						                        <td><%= moment(board.createdAt).fromNow() %></td>
+						                        <td><a href="/todo/team/<%= team.id %>/board/<%= board.id %>/delete" class="btn btn-danger btn-elevate btn-icon btn-xs"><i class="la la-trash"></i></a></td>
+						                    </tr>
+						                    <% }); %>
+						                </tbody>
+						            </table>
+						            <% } %>
 									<!--end: Datatable -->
 								</div>
 							</div>

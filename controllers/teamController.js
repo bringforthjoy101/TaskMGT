@@ -78,7 +78,7 @@ exports.team_create_post = [
                  req.session.sessionFlash = {
                     type: 'success',
                     comment: 'Great!',
-                    message: 'Role Created Successfully.'
+                    message: 'Team Created Successfully.'
                   };
                 console.log('Team created successfully');
                 // req.session.success = true;
@@ -222,6 +222,19 @@ exports.team_detail = async function(req, res, next) {
     
     
     const teamName = await models.Team.findById(req.params.team_id);
+    
+    const boards = await models.Board.findAll({
+            // Add order conditions here....where clause, order, sort e.t.c
+            order: [
+                ['board_name', 'ASC'],
+            ],
+            include: [
+                {
+                  model: models.user,
+                  attributes: ['id', 'firstname', 'lastname', 'username']
+                },
+            ]
+        });
 
     models.Team.findById(
         req.params.team_id,{
@@ -239,6 +252,7 @@ exports.team_detail = async function(req, res, next) {
             display: 'teamDetail',
             team: team,
             tasks: tasks,
+            boards: boards,
             teamName: teamName,
             user: req.user, // req.session.ret_data.data,
             moment: moment,
