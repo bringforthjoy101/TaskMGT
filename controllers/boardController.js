@@ -162,7 +162,7 @@ exports.board_update_post = function(req, res, next) {
     }).catch(error => {
         console.log("There was an error: " + error);
         res.status(404).send(error);
-    })
+    });
 };
 
 // Display list of all authors.
@@ -247,7 +247,7 @@ exports.board_detail = async function(req, res, next) {
         ]
     });
     
-    const tasksTodo = await models.Task.findAll({
+    const tasksTodoManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Todo' },
         order: [
             ['title', 'ASC'],
@@ -264,7 +264,7 @@ exports.board_detail = async function(req, res, next) {
         ]
     });
     
-    const tasksInProgress = await models.Task.findAll({
+    const tasksInProgressManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'InProgress' },
         order: [
             ['title', 'ASC'],
@@ -281,7 +281,7 @@ exports.board_detail = async function(req, res, next) {
         ]
     });
     
-    const tasksReview = await models.Task.findAll({
+    const tasksReviewManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Review' },
         order: [
             ['title', 'ASC'],
@@ -298,8 +298,76 @@ exports.board_detail = async function(req, res, next) {
         ]
     });
     
-    const tasksDone = await models.Task.findAll({
+    const tasksDoneManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Done' },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const tasksTodo = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'Todo', Employee: req.user.username },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const tasksInProgress = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'InProgress', Employee: req.user.username },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const tasksReview = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'Review', Employee: req.user.username },
+        order: [
+            ['title', 'ASC'],
+        ],
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username']
+            },
+            {
+              model: models.Team,
+              attributes: ['id', 'team_name']
+            },
+        ]
+    });
+    
+    const tasksDone = await models.Task.findAll({
+        where: { BoardId: req.params.board_id, status: 'Done', Employee: req.user.username },
         order: [
             ['title', 'ASC'],
         ],
@@ -347,6 +415,10 @@ exports.board_detail = async function(req, res, next) {
             tasksInProgress: tasksInProgress,
             tasksReview: tasksReview,
             tasksDone: tasksDone,
+            tasksTodoManager: tasksTodoManager,
+            tasksInProgressManager: tasksInProgressManager,
+            tasksReviewManager: tasksReviewManager,
+            tasksDoneManager: tasksDoneManager,
             team: team,
             user: req.user, // req.session.ret_data.data, //req.user,
             sessionFlash: res.locals.sessionFlash,

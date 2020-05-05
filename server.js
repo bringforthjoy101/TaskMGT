@@ -62,7 +62,12 @@ app.use(bodyParser.urlencoded({
 }));
 // app.use(expressValidator());
 app.use(cookieParser('secret'));
-app.use(session({cookie: { maxAge: 60000 }, secret: 'secret', saveUninitialized: true, resave: true, store: sessionStore,}));
+app.use(require('express-session')({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(session({cookie: { maxAge: 60000 }, secret: 'secret', saveUninitialized: false, resave: false, store: sessionStore,}));
 app.use(flash());
 // Custom flash middleware -- from Ethan Brown's book, 'Web Development with Node & Express'
 app.use(function(req, res, next){

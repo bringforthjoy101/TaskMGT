@@ -58,7 +58,7 @@ router.post('/task/:task_id/delete', task_controller.task_delete_post);
 router.post('/task/:task_id/update', task_controller.task_update_post);
 
 // GET request for one task.
-router.get('/task/:task_id', task_controller.task_detail);
+router.get('/task/:team_id/:board_id/:task_id', task_controller.task_detail);
 
 // GET request for list of all task.
 router.get('/tasks', task_controller.task_list);
@@ -76,7 +76,7 @@ router.get('/tasks/pending', task_controller.task_list_pending);
 router.get('/tasks/completed', task_controller.task_list_completed);
 
 // Update task status 
-router.get('/task/:task_id/todo', task_controller.task_todo);
+router.post('/task/assign', task_controller.task_todo);
 router.get('/task/:team_id/:board_id/:task_id/inprogress', task_controller.task_inprogress);
 router.get('/task/:team_id/:board_id/:task_id/review', task_controller.task_review);
 router.get('/task/:team_id/:board_id/:task_id/done', task_controller.task_done);

@@ -12,8 +12,62 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-toolbar">
                     <div class="dropdown dropdown-inline">
-                    	<a href="" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Assign</a>
-                        
+                    	<% if (user.profile !== 'staff') { %>
+                    	<button type="button" data-toggle="modal" data-target="#teamTask" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Assign</button>
+                    	<!--Modal Start-->
+                    		<div class="modal fade" id="teamTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Assign Task to a user</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/todo/task/assign" method="post" class="kt-form" >
+                                                <div class="kt-portlet__body">
+                                                    <div class="kt-section kt-section--first">
+                                                        <div class="form-group">
+                                                        	<div class="kt-widget-5">
+	                                                        	<div class="kt-widget-5__item kt-widget-5__item--info">
+		                                                            <div class="kt-widget-5__item-info">
+																		<a href="#" class="kt-widget-5__item-title">
+																			<%= task.title%>
+																		</a>
+																	</div>
+																</div>
+															</div>
+                                                            <label for="teamUser">Team Users:</label>
+                                        						<select class="form-control" id="teamUser" name="teamUser">
+                                        							<option > Select user</option>
+                                        							<% teamUsers.users.forEach(function(user) { %>
+                                        							<option value="<%= user.username %>"><%= user.username %></option>
+                                        							<% }); %>
+                                        						</select>
+                                                            
+                                                            <input hidden type="text" name="user_id" class="form-control" value="<%= user.id %>">
+                                                            <input hidden type="text" name="team_id" class="form-control" value="<%= task.Team.id %>">
+                                                            <input hidden type="text" name="task_id" class="form-control" value="<%= task.id %>">
+                                                            <input hidden type="text" name="board_id" class="form-control" value="<%= task.Board.id %>">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
+                                                    <Input type="submit" class="btn btn-brand" value="Create">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                    	<!--Modal End-->
+                    	<% } else { %>
+                        <a href="/todo/task/<%= task.Team.id %>/<%= board.id %>/<%= task.id %>/pick" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Pick up</a>
+                        <% } %>
                     </div>
                 </div>
             </div>

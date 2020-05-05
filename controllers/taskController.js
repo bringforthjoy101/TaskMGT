@@ -298,7 +298,28 @@ exports.task_detail = async function(req, res, next) {
     
     // const team = await models.Team.findById( req.params.team_id );
     // const board = await models.Team.findById( req.params.team_id );
-    // const employee = await models.Team.findById( req.params.team_id );
+    const board = await models.Board.findById( req.params.board_id );
+    
+    const teamUsers = await models.Team.findById(
+            req.params.team_id,
+            {
+                include: [
+                 {
+                      model: models.user,
+                      as: 'users',
+                      required: false,
+                      // Pass in the Team attributes that you want to retrieve
+                      attributes: ['id', 'username', 'name', 'profile'],
+                      through: {
+                        // This block of code allows you to retrieve the properties of the join table TeamUsers
+                        model: models.TeamUsers,
+                        as: 'teamUsers',
+                        attributes: ['team_id', 'user_id'],
+                    }
+                }
+            ]
+          }
+    );
     
     models.Task.findById(
         req.params.task_id, {
@@ -330,7 +351,9 @@ exports.task_detail = async function(req, res, next) {
             title: 'Task Details',
             page: 'taskPage',
             display: 'taskDetail',
+            teamUsers: teamUsers,
             task: task,
+            board: board,
             user: req.user,
             moment: moment,
             layout: 'layouts/detail'
@@ -345,10 +368,10 @@ exports.task_detail = async function(req, res, next) {
 exports.task_todo = function (req, res) {
   console.log("I want to update status to todo");
  
-  let task_id = req.params.task_id;
+  let task_id = req.body.task_id;
   let employee_id = req.user.id;
-  let team_id = req.params.team_id;
-  let board_id = req.params.board_id;
+  let team_id = req.body.team_id;
+  let board_id = req.body.board_id;
   
   
   console.log("The task id is not null " + task_id);
@@ -356,13 +379,14 @@ exports.task_todo = function (req, res) {
   models.Task.update(
       // Values to update
           {
-              status: 'Todo'
+              status: 'Todo',
+              Employee: req.body.teamUser
               
           },
         { // Clause
               where: 
               {
-                  id: req.params.task_id
+                  id: req.body.task_id
               }
           }
       //   returning: true, where: {id: req.params.task_id} 
@@ -376,12 +400,12 @@ exports.task_todo = function (req, res) {
         { // Clause
               where: 
               {
-                  id: req.params.task_id
+                  id: req.body.task_id
               }
           }
       //   returning: true, where: {id: req.params.expense_id} 
        ).then(function(){
-           const date = models.Task.findById(req.params.task_id);
+           const date = models.Task.findById(req.body.task_id);
             var sprint_date = moment(date.startedAt).add(14, 'days').format();
            models.Task.update(
       // Values to update
@@ -392,12 +416,12 @@ exports.task_todo = function (req, res) {
         { // Clause
               where: 
               {
-                  id: req.params.task_id
+                  id: req.body.task_id
               }
           }
       //   returning: true, where: {id: req.params.expense_id} 
        ).then(function(){
-            const date = models.Task.findById(req.params.task_id);
+            const date = models.Task.findById(req.body.task_id);
             var status = moment(date.startedAt).add(16, 'hours').format();
             
             models.Task.update(
@@ -409,7 +433,7 @@ exports.task_todo = function (req, res) {
             { // Clause
                   where: 
                   {
-                      id: req.params.task_id
+                      id: req.body.task_id
                   }
               }
           //   returning: true, where: {id: req.params.expense_id} 
@@ -421,14 +445,14 @@ exports.task_todo = function (req, res) {
             //     comment: 'Great!',
             //     message: 'Expense Approved Successfully.'
             //   }
-            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
+            res.redirect('/todo/task/' + team_id + '/' + board_id + '/' + task_id);
             console.log('Task Updated to todo');
         } else {
             // req.session.sessionFlash = {
             //     type: 'error',
             //     message: 'Oops, Something went wrong.'
             //   }
-            res.redirect('/todo/team/' + team_id + '/board/' + board_id);
+            res.redirect('/todo/task/' + team_id + '/' + board_id + '/' + task_id);
             console.log('Task Not Updated ');
         }
     });

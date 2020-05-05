@@ -225,6 +225,7 @@ exports.team_detail = async function(req, res, next) {
     
     const boards = await models.Board.findAll({
             // Add order conditions here....where clause, order, sort e.t.c
+            
             order: [
                 ['board_name', 'ASC'],
             ],
