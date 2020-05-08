@@ -30,17 +30,15 @@
                                                     <div class="kt-section kt-section--first">
                                                         <div class="form-group">
                                                             <label>Team Name: *</label>
-                											
-                											<input type="text" name="team_name" class="form-control" placeholder="Enter Team Name">
-                                                            <label>Employees</label>
-                                                            <div class="kt-checkbox-inline">
-                                                                <% employees.forEach(function(employee) { %>
-                                                                <label class="kt-checkbox">
-                                                                    <input type="checkbox" name="employees" class='employeeCheckbox' id="<%= employee.id %>" value="<%= employee.id %>"> <%= employee.username %>
-                                                                    <span></span>
-                                                                </label>
-                                                                <% }); %>
-                                                            </div>
+                                                            <input type="text" name="team_name" class="form-control" placeholder="Enter Team Name">
+                                                            <label>Employees: *</label>
+                												<select class="form-control kt-select2" id="kt_select2_3" name="employees" multiple="multiple" style="width:100%">
+                													<optgroup label="Pls select employees for this team">
+                														<% employees.forEach(function(employee) { %>
+                														<option value="<%= employee.id %>"><%= employee.username %></option>
+                														<% }); %>
+                													</optgroup>
+                												</select>
                                                             
                                                             <input type="hidden" name="employee_id" class="form-control" value="<%= user.id %>">
                                                         </div>
