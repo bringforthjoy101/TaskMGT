@@ -5,7 +5,7 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-label">
                 <h3 class="kt-portlet__head-title">
-                    <%= title %>
+                    <%= boardName.board_name %>'s tasks <span class="badge badge-light"><%= tasks.length %></span>
                 </h3>
                 
             </div>
@@ -90,51 +90,115 @@
             <table class="table table-striped- table-bordered table-hover" id="">
                 <thead>
                     <tr>
-                        <th>Backlog</th>
-                        <th>Todo</th>
-                        <th>InProgress</th>
-                        <th>Review</th>
-                        <th>Done</th>
+                        <% if (user.profile !== 'staff') { %>
+                            <th>Backlog <span class="badge badge-light"><%= tasksBacklog.length %></span></th>
+                            <th>Todo <span class="badge badge-light"><%= tasksTodoManager.length %></span></th>
+                            <th>InProgress <span class="badge badge-light"><%= tasksInProgressManager.length %></span></th>
+                            <th>Review <span class="badge badge-light"><%= tasksReviewManager.length %></span></th>
+                            <th>Done <span class="badge badge-light"><%= tasksDoneManager.length %></span></th>
+                        <% } else { %>
+                            <th>Backlog <span class="badge badge-light"><%= tasksBacklog.length %></span></th>
+                            <th>Todo <span class="badge badge-light"><%= tasksTodo.length %></span></th>
+                            <th>InProgress <span class="badge badge-light"><%= tasksInProgress.length %></span></th>
+                            <th>Review <span class="badge badge-light"><%= tasksReview.length %></span></th>
+                            <th>Done <span class="badge badge-light"><%= tasksDone.length %></span></th>
+                        <% } %>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <ul class="list-group">
+                            <div class="list-group">
                                 <% if (user.profile !== 'staff') { %>
                                     <% tasksBacklog.forEach(function(task) { %>
-                                        <li class="list-group-item">
-                                            <p><a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a></p>
-                                        </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+												<a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a>
+												<small><button type="button" data-toggle="modal" data-target="#assignTask<%= task.id %>" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Assign</button></small>
+											</li>
+                                            
+                                            <!--Modal Start-->
+                                        		<div class="modal fade" id="assignTask<%= task.id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Assign Task to a user</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form action="/todo/task/<%= task.id %>/assign" method="post" class="kt-form" >
+                                                                    <div class="kt-portlet__body">
+                                                                        <div class="kt-section kt-section--first">
+                                                                            <div class="form-group">
+                                                                            	<div class="kt-widget-5">
+                    	                                                        	<div class="kt-widget-5__item kt-widget-5__item--info">
+                    		                                                            <div class="kt-widget-5__item-info">
+                    																		<a href="#" class="kt-widget-5__item-title">
+                    																			<%= task.title%>
+                    																		</a>
+                    																	</div>
+                    																</div>
+                    															</div>
+                                                                                <label for="teamUser">Team Users:</label>
+                                                            						<select class="form-control" id="teamUser" name="teamUser">
+                                                            							<option > Select user</option>
+                                                            							<% teamUsers.users.forEach(function(user) { %>
+                                                            							<option value="<%= user.username %>"><%= user.username %></option>
+                                                            							<% }); %>
+                                                            						</select>
+                                                                                
+                                                                                <input hidden type="text" name="user_id" class="form-control" value="<%= user.id %>">
+                                                                                <input hidden type="text" name="team_id" class="form-control" value="<%= task.Team.id %>">
+                                                                                <input hidden type="text" name="task_id" class="form-control" value="<%= task.id %>">
+                                                                                <input hidden type="text" name="board_id" class="form-control" value="<%= board_id %>">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
+                                                                        <Input type="submit" class="btn btn-brand" value="Assign">
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        	<!--Modal End-->
 								    <% }); %>
                                 <% } else { %>
                                     <% tasksBacklog.forEach(function(task) { %>
                                         <li class="list-group-item">
-                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a>
+                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>" class="list-group-item list-group-item-action flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+													<h5 class="mb-1"><%= task.title%></h5>
+												</div>
+                                            </a>
                                             <% if (user.profile == 'staff') { %>
                                             <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>/pick" type="button" class="btn btn-focus btn-elevate btn-pill btn-elevate-air btn-sm">Pick up</a>
                                             <% } %>
                                         </li>
     								<% }); %>
     							<% } %>
-                            </ul>
+                            </div>
                         </td>
                         <td>
                             <ul class="list-group">
                                 <% if (user.profile !== 'staff') { %>
                                     <% tasksTodoManager.forEach(function(task) { %>
                                         <li class="list-group-item">
-                                            <p><a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a></p>
+                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a>
                                             <p>Assigned to: <%= task.Employee %></p>
-                                        </li>
+                                        </div>
 								    <% }); %>
                                 <% } else { %>
                                     <% tasksTodo.forEach(function(task) { %>
-                                        <li class="list-group-item">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a> 
-                                            <% if (user.profile == 'staff') { %>
-                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>/inprogress" type="button" class="btn btn-focus btn-elevate btn-pill btn-elevate-air btn-sm">InProgress</a>
-                                            <% } %>
+                                            <small><a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>/inprogress" type="button" class="btn btn-focus btn-elevate btn-pill btn-elevate-air btn-sm">InProgress</a>
+                                            </small>
                                         </li>
     								<% }); %>
     							<% } %>
@@ -151,11 +215,10 @@
 								    <% }); %>
                                 <% } else { %>
                                     <% tasksInProgress.forEach(function(task) { %>
-                                        <li class="list-group-item">
-                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a> 
-                                            <% if (user.profile == 'staff') { %>
-                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>/review" type="button" class="btn btn-focus btn-elevate btn-pill btn-elevate-air btn-sm">Review</a>
-                                            <% } %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a>
+                                            <small><a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>/review" type="button" class="btn btn-focus btn-elevate btn-pill btn-elevate-air btn-sm">Review</a>
+                                            </small>
                                         </li>
     								<% }); %>
     							<% } %>
@@ -172,11 +235,11 @@
 								    <% }); %>
                                 <% } else { %>
                                     <% tasksReview.forEach(function(task) { %>
-                                        <li class="list-group-item">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a> 
-                                            <% if (user.profile == 'staff') { %>
+                                            <small>
                                             <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>/done" type="button" class="btn btn-focus btn-elevate btn-pill btn-elevate-air btn-sm">Done</a>
-                                            <% } %>
+                                            </small>
                                         </li>
     								<% }); %>
     							<% } %>
@@ -194,7 +257,7 @@
                                 <% } else { %>
                                     <% tasksDone.forEach(function(task) { %>
                                         <li class="list-group-item">
-                                            <a href="#"><%= task.title%></a>
+                                            <a href="/todo/task/<%= team.id %>/<%= board.id %>/<%= task.id %>"><%= task.title%></a>
                                         </li>
     								<% }); %>
     							<% } %>

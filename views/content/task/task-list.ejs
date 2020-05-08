@@ -1,75 +1,245 @@
 <!-- begin:: Content -->
 <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
     
-    <div class="kt-portlet kt-portlet--mobile">
-        <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-                <h3 class="kt-portlet__head-title">
-                    <%= title %>
-                </h3>
-                
-            </div>
-            <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-toolbar">
-                    <div class="dropdown dropdown-inline">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="kt-portlet__body">
+    
 
-            <!--begin: Datatable -->
-            <% if (tasks.length == 0) { %>
-                <div class="kt-heading kt-heading--center">No Record Yet</div>
-            <% } else { %>
-            <table class="table table-striped- table-bordered table-hover" id="">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Task Title</th>
-                        <th>Duration</th>
-                        <th>Status</th>
-                        <th>Created By</th>
-                        <th>Time Created</th>
-                        <th>Last Modified</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% tasks.forEach(function(task) { %>
-                    <tr>
-                        <td><%= task.id %></td>
-                        <td><a href="/todo/task/<%= task.id %>"><%= task.title %></a></td>
-                        <td><%= task.duration %> Hour(s)</td>
-                        <td><span class="btn btn-label-primary btn-sm"><%= task.status %></span></td>
-                        <td><%= task.user.username %></td>
-                        <td><%= moment(task.createdAt).fromNow() %></td>
-                        <td><%= moment(task.updatedAt).fromNow() %></td>
-                        <td nowrap>
-                            <div class="dropdown dropdown-inline">
-        							<button type="button" class="btn btn-hover-brand btn-elevate-hover btn-icon btn-sm btn-icon-md btn-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        								<i class="flaticon-more-1"></i>
-        							</button>
-    							<div class="dropdown-menu dropdown-menu-right">
-    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/todo"><i class="la la-plus"></i> Todo</a>
-    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/inprogress"><i class="la la-user"></i> InProgress</a>
-    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/review"><i class="la la-cloud-download"></i> Review</a>
-    								<div class="dropdown-divider"></div>
-    								<a class="dropdown-item" href="/todo/task/<%= task.id %>/done"><i class="la la-cog"></i> Done</a>
-    							</div>
-						    </div>
-						</td>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-            <% } %>
-            <!--end: Datatable -->
+            
+            
+            <!--begin::Portlet-->
+			<div class="kt-portlet kt-portlet--height-fluid">
+				<div class="kt-portlet__head">
+					<div class="kt-portlet__head-label">
+					    <% if (user.profile !== 'staff') { %>
+						<h3 class="kt-portlet__head-title"> All Tasks <span class="badge badge-pill badge-secondary"><%= allTasksCount.count %></span> </h3>
+						<% } else { %>
+						<h3 class="kt-portlet__head-title"> My Tasks <span class="badge badge-pill badge-secondary"><%= myTasksCount.count %></span> </h3>
+						<% } %>
+					</div>
+					<div class="kt-portlet__head-toolbar">
+						<div class="kt-portlet__head-toolbar-wrapper">
+							<div class="dropdown dropdown-inline">
+								
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="kt-portlet__body">
+					<div class="kt-widget-1">
+						<ul class="nav nav-pills nav-tabs-btn nav-pills-btn-brand" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#kt_tabs_19_15e8d897ac65d4" role="tab">
+								    <% if (user.profile !== 'staff') { %>
+									<span class="nav-link-icon"><%= allActiveTasksCount.count %></span>
+									<% } else { %>
+									<span class="nav-link-icon"><%= myActiveTasksCount.count %></span>
+									<% } %>
+									<span class="nav-link-title">Active</span>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#kt_tabs_19_25e8d897ac65d4" role="tab">
+								    <% if (user.profile !== 'staff') { %>
+									<span class="nav-link-icon"><%= allPendingTasksCount.count %></span>
+									<% } else { %>
+									<span class="nav-link-icon"><%= myPendingTasksCount.count %></span>
+									<% } %>
+									<span class="nav-link-title">Pending</span>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#kt_tabs_19_35e8d897ac65d4" role="tab">
+								    <% if (user.profile !== 'staff') { %>
+									<span class="nav-link-icon"><%= allCompletedTasksCount.count %></span>
+									<% } else { %>
+									<span class="nav-link-icon"><%= myCompletedTasksCount.count %></span>
+									<% } %>
+									<span class="nav-link-title">Completed</span>
+								</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane fade active show" id="kt_tabs_19_15e8d897ac65d4" role="tabpanel">
+							    <% if (user.profile !== 'staff') { %>
+    							    <% if (allActiveTasks.length == 0) { %>
+    							        <p>there have no active task(s).<p>
+    							    <% } else { %>
+        								<% allActiveTasks.forEach(function(task) { %>
+            								<div class="kt-widget-1__item">
+            									<div class="kt-widget-1__item-info">
+            										<a href="#" class="kt-widget-1__item-title">
+            											<%= task.title %>
+            										</a>
+            										<div class="kt-widget-1__item-desc"><%= task.desc %></div>
+            										<div class="kt-widget-1__item-desc"><%= task.Employee %></div>
+            									</div>
+            									<% 
+            									var date1 = new Date(moment(Date.now()).format());
+												var date2 = new Date(moment(task.dueAt).format());
+												var diff = parseInt((date2 - date1) / (1000 * 3600));
+												var timer = 16 - diff;
+												var timer2 = (timer/16) * 100
+            									%>
+            									
+            									<div class="kt-widget-1__item-stats">
+            										
+            										<% if (timer2 > 100) { %>
+	            										<div class="kt-widget-1__item-value">100%</div>
+	            										<div class="kt-widget-1__item-progress">
+	            											<div class="progress">
+	            												<div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+	            											</div>
+	            										</div>
+	            									<% } else { %>
+	            										<div class="kt-widget-1__item-value"><%= timer2 %>%</div>
+	            										<div class="kt-widget-1__item-progress">
+	            											<div class="progress">
+	            												<% if (timer2 <= 50) { %>
+	            												<div class="progress-bar bg-success" role="progressbar" style="width: <%= timer2 %>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+	            												<% } else if (timer2 > 50 && timer2 <= 75) { %>
+	            												<div class="progress-bar bg-warning" role="progressbar" style="width: <%= timer2 %>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+	            												<% } else { %>
+	            												<div class="progress-bar bg-danger" role="progressbar" style="width: <%= timer2 %>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+	            												<% } %>
+	            											</div>
+	            										</div>
+	            									<% } %>
+            									</div>
+            								</div>
+        								<% }); %>
+        							<% } %>
+        						<% } else { %>
+        						    <% if (myActiveTasks.length == 0) { %>
+    							        <p>You have no active task(s).<p>
+    							    <% } else { %>
+        								<% myActiveTasks.forEach(function(task) { %>
+            								<div class="kt-widget-1__item">
+            									<div class="kt-widget-1__item-info">
+            										<a href="#" class="kt-widget-1__item-title">
+            											<%= task.title %>
+            										</a>
+            										<div class="kt-widget-1__item-desc"><%= task.desc %></div>
+            									</div>
+            									
+            									<div class="kt-widget-1__item-stats">
+            										<div class="kt-widget-1__item-value">+79%</div>
+            										<div class="kt-widget-1__item-progress">
+            											<div class="progress">
+            												<div class="progress-bar bg-focus" role="progressbar" style="width: 79%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            											</div>
+            										</div>
+            									</div>
+            								</div>
+        								<% }); %>
+        							<% } %>
+        						<% } %>
+							</div>
+							<div class="tab-pane fade" id="kt_tabs_19_25e8d897ac65d4" role="tabpanel">
+							    <% if (user.profile !== 'staff') { %>
+    								<% if (allPendingTasks.length == 0) { %>
+    							        <p>There have no pending task(s).<p>
+    							    <% } else { %>
+        								<% allPendingTasks.forEach(function(task) { %>
+            								<div class="kt-widget-1__item">
+            									<div class="kt-widget-1__item-info">
+            										<a href="#" class="kt-widget-1__item-title">
+            											<%= task.title %>
+            										</a>
+            										<div class="kt-widget-1__item-desc"><%= task.desc %></div>
+            									</div>
+            									
+            									<div class="kt-widget-1__item-stats">
+            										<div class="kt-widget-1__item-value">Last Updated <%= moment(task.updatedAt).fromNow() %></div>
+            										
+            									</div>
+            								</div>
+        								<% }); %>
+        							<% } %>
+        						<% } else { %>
+        						    <% if (myPendingTasks.length == 0) { %>
+    							        <p>You have no pending task(s).<p>
+    							    <% } else { %>
+        								<% myPendingTasks.forEach(function(task) { %>
+            								<div class="kt-widget-1__item">
+            									<div class="kt-widget-1__item-info">
+            										<a href="#" class="kt-widget-1__item-title">
+            											<%= task.title %>
+            										</a>
+            										<div class="kt-widget-1__item-desc"><%= task.desc %></div>
+            									</div>
+            									
+            									<div class="kt-widget-1__item-stats">
+            										<div class="kt-widget-1__item-value">+79%</div>
+            										<div class="kt-widget-1__item-progress">
+            											<div class="progress">
+            												<div class="progress-bar bg-focus" role="progressbar" style="width: 79%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            											</div>
+            										</div>
+            									</div>
+            								</div>
+        								<% }); %>
+        							<% } %>
+        						<% } %>
+							</div>
+							<div class="tab-pane fade" id="kt_tabs_19_35e8d897ac65d4" role="tabpanel">
+							    <% if (user.profile !== 'staff') { %>
+    								<% if (allCompletedTasks.length == 0) { %>
+    							        <p>You have no active task(s).<p>
+    							    <% } else { %>
+        								<% allCompletedTasks.forEach(function(task) { %>
+            								<div class="kt-widget-1__item">
+            									<div class="kt-widget-1__item-info">
+            										<a href="#" class="kt-widget-1__item-title">
+            											<%= task.title %>
+            										</a>
+            										<div class="kt-widget-1__item-desc"><%= task.desc %></div>
+            									</div>
+            									
+            									<div class="kt-widget-1__item-stats">
+            										<div class="kt-widget-1__item-value">+79%</div>
+            										<div class="kt-widget-1__item-progress">
+            											<div class="progress">
+            												<div class="progress-bar bg-focus" role="progressbar" style="width: 79%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            											</div>
+            										</div>
+            									</div>
+            								</div>
+        								<% }); %>
+        							<% } %>
+        						<% } else { %>
+        						    <% if (myCompletedTasks.length == 0) { %>
+    							        <p>You have no active task(s).<p>
+    							    <% } else { %>
+        								<% myCompletedTasks.forEach(function(task) { %>
+            								<div class="kt-widget-1__item">
+            									<div class="kt-widget-1__item-info">
+            										<a href="#" class="kt-widget-1__item-title">
+            											<%= task.title %>
+            										</a>
+            										<div class="kt-widget-1__item-desc"><%= task.desc %></div>
+            									</div>
+            									
+            									<div class="kt-widget-1__item-stats">
+            										<div class="kt-widget-1__item-value">+79%</div>
+            										<div class="kt-widget-1__item-progress">
+            											<div class="progress">
+            												<div class="progress-bar bg-focus" role="progressbar" style="width: 79%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            											</div>
+            										</div>
+            									</div>
+            								</div>
+        								<% }); %>
+        							<% } %>
+        						<% } %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-        </div>
+			<!--end::Portlet-->
+
         
-    </div>
     
 </div>
 

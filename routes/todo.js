@@ -6,8 +6,7 @@ var router = express.Router();
 var board_controller = require('../controllers/boardController');
 var task_controller = require('../controllers/taskController');
 var team_controller = require('../controllers/teamController');
-var employee_controller = require('../controllers/employeeController');
-var department_controller = require('../controllers/departmentController');
+var user_controller = require('../controllers/userController');
 
 
 /// BOARD ROUTES ///
@@ -63,22 +62,14 @@ router.post('/task/:task_id/update', task_controller.task_update_post);
 router.get('/task/:team_id/:board_id/:task_id', task_controller.task_detail);
 
 // GET request for list of all task.
-router.get('/tasks', task_controller.task_list);
+router.get('/alltasks', task_controller.all_task_list);
 
-// GET request for list of all task.
-router.get('/myTasks', task_controller.task_list_employee);
-
-// GET request for list of all task.
-router.get('/tasks/active', task_controller.task_list_active);
-
-// GET request for list of all task.
-router.get('/tasks/pending', task_controller.task_list_pending);
-
-// GET request for list of all task.
-router.get('/tasks/completed', task_controller.task_list_completed);
+// GET request for list of my task.
+router.get('/mytasks', task_controller.my_task_list);
 
 // Update task status 
-router.post('/task/assign', task_controller.task_todo);
+router.post('/task/:task_id/assign', task_controller.task_assign);
+router.get('/task/:task_id/:board_id/:team_id/unassign', task_controller.task_unassign);
 router.get('/task/:team_id/:board_id/:task_id/inprogress', task_controller.task_inprogress);
 router.get('/task/:team_id/:board_id/:task_id/review', task_controller.task_review);
 router.get('/task/:team_id/:board_id/:task_id/done', task_controller.task_done);
@@ -112,11 +103,8 @@ router.get('/team/:team_id', team_controller.team_detail);
 // GET request for list of all team.
 router.get('/teams', team_controller.team_list);
 
-// GET request for list of all users in a department.
-router.get('/department/:department_name', department_controller.department_users);
-
-// GET request for list of all Employees.
-router.get('/employees', employee_controller.employees);
+// GET request for list of all users.
+router.get('/users', user_controller.user_list);
 
 
 

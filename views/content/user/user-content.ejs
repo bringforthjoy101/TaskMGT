@@ -1,0 +1,32 @@
+<!--user VIEW STARTS HERE -->
+<!--complete logic for user view-->
+<% switch (display) {
+    case 'userList' : %>
+           <%- include ('../../content/user/user-list') %>
+           <% break;
+     
+    case 'userDetail' : %>
+    <%- include ('../../content/user/user-detail') %>
+           <% break;
+    
+    case 'userCreate' : %>
+    <%- include ('../../content/user/user-create') %>
+           <% break;
+    
+    case 'userUpdate' : %>
+    <%- include ('../../content/user/user-update') %>
+           <% break;
+           
+    case 'userDelete' : %>
+    <%- include ('../../content/user/user-delete') %>
+           <% break;
+
+       case 'userDisplay' : %>
+       <%- include ('../../content/user/user-list') %>
+              <% break;
+           
+    default : %>
+           <%- include ('../../pages/index') %>
+           <%  
+    } %>
+     

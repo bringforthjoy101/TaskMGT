@@ -13,24 +13,10 @@
                             <div class="kt-widget-3__content-info">
                                 <div class="kt-widget-3__content-section">
                                     <div class="kt-widget-3__content-title">Boards</div>
-                                    <div class="kt-widget-3__content-desc">SAAS TOTAL PORIFT</div>
                                 </div>
                                 <div class="kt-widget-3__content-section">
                                     <span class="kt-widget-3__content-bedge"></span>
                                     <span class="kt-widget-3__content-number"><%= boardCount.count %></span>
-                                </div>
-                            </div>
-                            <div class="kt-widget-3__content-stats">
-                                <div class="kt-widget-3__content-progress">
-                                    <div class="progress">
-
-                                        <!-- Doc: A bootstrap progress bar can be used to show a user how far along it's in a process, see https://getbootstrap.com/docs/4.1/components/progress/ -->
-                                        <div class="progress-bar bg-light" style="width: 72%;" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="kt-widget-3__content-action">
-                                    <div class="kt-widget-3__content-text">CHANGE</div>
-                                    <div class="kt-widget-3__content-value">+72%</div>
                                 </div>
                             </div>
                         </div>
@@ -50,23 +36,9 @@
                             <div class="kt-widget-3__content-info">
                                 <div class="kt-widget-3__content-section">
                                     <div class="kt-widget-3__content-title">Total Teams</div>
-                                    <div class="kt-widget-3__content-desc">TOTAL SALES AMOUNT</div>
                                 </div>
                                 <div class="kt-widget-3__content-section">
                                     <span class="kt-widget-3__content-number"><%= teamCount.count %></span>
-                                </div>
-                            </div>
-                            <div class="kt-widget-3__content-stats">
-                                <div class="kt-widget-3__content-progress">
-                                    <div class="progress">
-
-                                        <!-- Doc: A bootstrap progress bar can be used to show a user how far along it's in a process, see https://getbootstrap.com/docs/4.1/components/progress/ -->
-                                        <div class="progress-bar bg-light" style="width: 85%;" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="kt-widget-3__content-action">
-                                    <div class="kt-widget-3__content-text">CHANGE</div>
-                                    <div class="kt-widget-3__content-value">+85%</div>
                                 </div>
                             </div>
                         </div>
@@ -86,23 +58,9 @@
                             <div class="kt-widget-3__content-info">
                                 <div class="kt-widget-3__content-section">
                                     <div class="kt-widget-3__content-title">Total Employees</div>
-                                    <div class="kt-widget-3__content-desc">Support Quality</div>
                                 </div>
                                 <div class="kt-widget-3__content-section">
                                     <span class="kt-widget-3__content-number"><%= userCount.count %></span>
-                                </div>
-                            </div>
-                            <div class="kt-widget-3__content-stats">
-                                <div class="kt-widget-3__content-progress">
-                                    <div class="progress">
-
-                                        <!-- Doc: A bootstrap progress bar can be used to show a user how far along it's in a process, see https://getbootstrap.com/docs/4.1/components/progress/ -->
-                                        <div class="progress-bar bg-light" style="width: 45%;" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="kt-widget-3__content-action">
-                                    <div class="kt-widget-3__content-text">CHANGE</div>
-                                    <div class="kt-widget-3__content-value">+45%</div>
                                 </div>
                             </div>
                         </div>
@@ -115,6 +73,88 @@
     </div>
 
     <!--end::Row-->
+    
+    <!--begin::Row-->
+	<div class="row">
+		<div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+
+			<!--begin::Portlet-->
+			<div class="kt-portlet kt-portlet--height-fluid kt-widget-10">
+				<div class="kt-portlet__body">
+					<div class="kt-widget-10__wrapper">
+						<div class="kt-widget-10__details">
+							<div class="kt-widget-10__title">Hours Completed</div>
+							<div class="kt-widget-10__desc"><%= allHoursCompleted %> Hrs</div>
+						</div>
+						<div class="kt-widget-10__num">
+							<%= myHoursCompleted %> Hrs
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--end::Portlet-->
+		</div>
+		<div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+
+			<!--begin::Portlet-->
+			<div class="kt-portlet kt-portlet--height-fluid kt-widget-10">
+				<div class="kt-portlet__body">
+					<div class="kt-widget-10__wrapper">
+						<div class="kt-widget-10__details">
+							<div class="kt-widget-10__title">Hours Left</div>
+							<div class="kt-widget-10__desc"><%= allHoursLeft %> Hrs</div>
+						</div>
+						<div class="kt-widget-10__num">
+							<%= myHoursLeft %> Hrs
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--end::Portlet-->
+		</div>
+		<div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+
+			<!--begin::Portlet-->
+			<div class="kt-portlet kt-portlet--height-fluid kt-widget-10">
+				<div class="kt-portlet__body">
+					<div class="kt-widget-10__wrapper">
+						<div class="kt-widget-10__details">
+							<div class="kt-widget-10__title">Total Teams</div>
+							<div class="kt-widget-10__desc"><%= teamCount.count %></div>
+						</div>
+						<div class="kt-widget-10__num">
+							<%= myTeams.teams.length %> 
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--end::Portlet-->
+		</div>
+		<div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+
+			<!--begin::Portlet-->
+			<div class="kt-portlet kt-portlet--height-fluid kt-widget-10">
+				<div class="kt-portlet__body">
+					<div class="kt-widget-10__wrapper">
+						<div class="kt-widget-10__details">
+							<div class="kt-widget-10__title">Total Tasks</div>
+							<div class="kt-widget-10__desc"><%= taskCount.count %></div>
+						</div>
+						<div class="kt-widget-10__num">
+							<%= myTaskCount.count %> 
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--end::Portlet-->
+		</div>
+	</div>
+
+	<!--end::Row-->
     
 </div>
 

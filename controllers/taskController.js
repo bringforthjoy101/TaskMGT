@@ -1,5 +1,6 @@
 var models = require('../models');
 var moment = require('moment');
+const { Op } = require('sequelize');
 const { check, validationResult } = require('express-validator');
 const { sanitizeBody } = require('express-validator');
 
@@ -132,12 +133,17 @@ exports.task_update_post = function(req, res, next) {
     }).catch(error => {
         console.log("There was an error: " + error);
         res.status(404).send(error);
-    })
+    });
 };
 
 // Display list of all talkss.
-exports.task_list = function(req, res, next) {
-    models.Task.findAll({
+exports.all_task_list = async function(req, res, next) {
+    const myPendingTasks = await models.Task.findAll({
+        where: {Employee: req.user.username, status: 'Todo'},
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
         include: [
             {
               model: models.user,
@@ -148,30 +154,267 @@ exports.task_list = function(req, res, next) {
                 attributes: ['id', 'board_name']
             },
         ]
-    }).then(function(tasks){
+    });
+    
+    const allPendingTasks = await models.Task.findAll({
+        where: {status: 'Todo'},
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const myActiveTasks = await models.Task.findAll({
+        where: { 
+            Employee: req.user.username,  
+            status: 'InProgress',
+        },
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const allActiveTasks = await models.Task.findAll({
+        where: {
+           status: 'InProgress'
+        },
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const myCompletedTasks = await models.Task.findAll({
+        where: {Employee: req.user.username, status: 'Done'},
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const allCompletedTasks = await models.Task.findAll({
+        where: {status: 'Done'},
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const myCompletedTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username, status: 'Done'}
+    });
+    
+    const allCompletedTasksCount = await models.Task.findAndCountAll({
+        where: {status: 'Done'}
+    });
+    
+    const myActiveTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username, status: 'InProgress'}
+    });
+    
+    const allActiveTasksCount = await models.Task.findAndCountAll({
+        where: {status: 'InProgress'}
+    });
+    
+    const myPendingTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username, status: 'Todo'}
+    });
+    
+    const allPendingTasksCount = await models.Task.findAndCountAll({
+        where: {status: 'Todo'}
+    });
+    
+    const myTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username}
+    });
+    
+    const allTasksCount = await models.Task.findAndCountAll();
+    
+    const myTasks = models.Task.findAll({
+        where: {Employee: req.user.username},
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    models.Task.findAll({
+        order: [
+            ['id', 'DESC'],
+        ],
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    }).then(function(allTasks){
 
-        console.log("Board Listed successfully");
+        console.log("Tasks Listed successfully");
 
       res.render('pages/index', {
-          title: 'Tasks',
+          title: 'My Tasks',
           page: 'taskPage',
           display: 'taskDisplay',
           user: req.user,
-          sessionFlash: res.locals.sessionFlash,
-          errors: req.session.errors,
-          success: req.session.success,
           moment: moment,
-          tasks: tasks,
+          myTasks: myTasks,
+          allTasks: allTasks,
+          myTasksCount: myTasksCount,
+          allTasksCount: allTasksCount,
+          myPendingTasksCount: myPendingTasksCount,
+          allPendingTasksCount: allPendingTasksCount,
+          myActiveTasksCount: myActiveTasksCount,
+          allActiveTasksCount: allActiveTasksCount,
+          myCompletedTasksCount: myCompletedTasksCount,
+          allCompletedTasksCount: allCompletedTasksCount,
+          myCompletedTasks: myCompletedTasks,
+          allCompletedTasks: allCompletedTasks,
+          myActiveTasks: myActiveTasks,
+          allActiveTasks: allActiveTasks,
+          myPendingTasks: myPendingTasks,
+          allPendingTasks: allPendingTasks,
+          parent: 'My Tasks',
+          parentUrl: '/todo/alltasks',
           layout: 'layouts/main'
+          
       });
-      req.session.errors = null;
     });
 };
 
 // Display list of all tasks belonging to an employee.
-exports.task_list_employee = function(req, res, next) {
+exports.my_task_list = async function(req, res, next) {
+    
+    const myPendingTasks = await models.Task.findAll({
+        where: {Employee: req.user.username, status: 'Todo'},
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const myActiveTasks = await models.Task.findAll({
+        where: {Employee: req.user.username, status: 'InProgress'},
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const myCompletedTasks = await models.Task.findAll({
+        where: {Employee: req.user.username, status: 'Done'},
+        limit: 10,
+        include: [
+            {
+              model: models.user,
+              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
+            },
+            {
+                model: models.Board,
+                attributes: ['id', 'board_name']
+            },
+        ]
+    });
+    
+    const myCompletedTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username, status: 'Done'}
+    });
+    
+    const myActiveTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username, status: 'InProgress'}
+    });
+    
+    const myPendingTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username, status: 'Todo'}
+    });
+    
+    const myTasksCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username}
+    });
+    
     models.Task.findAll({
         where: {Employee: req.user.username},
+        limit: 10,
         include: [
             {
               model: models.user,
@@ -187,119 +430,39 @@ exports.task_list_employee = function(req, res, next) {
         console.log("Board Listed successfully");
 
       res.render('pages/index', {
+          parent: 'My Tasks',
+          parentUrl: '/todo/mytasks',
           title: 'Tasks',
           page: 'taskPage',
           display: 'taskDisplay',
           user: req.user,
           moment: moment,
           tasks: tasks,
+          myTasksCount: myTasksCount,
+          myPendingTasksCount: myPendingTasksCount,
+          myActiveTasksCount: myActiveTasksCount,
+          myCompletedTasksCount: myCompletedTasksCount,
+          myCompletedTasks: myCompletedTasks,
+          myActiveTasks: myActiveTasks,
+          myPendingTasks: myPendingTasks,
           layout: 'layouts/main'
           
       });
     });
 };
 
-// Display list of all active task.
-exports.task_list_active = function(req, res, next) {
-    models.Task.findAll({
-        where: {Employee: req.user.username, status: 'InProgress' || 'Todo'},
-        include: [
-            {
-              model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
-            },
-            {
-                model: models.Board,
-                attributes: ['id', 'board_name']
-            },
-        ]
-    }).then(function(tasks){
-
-        console.log("Board Listed successfully");
-
-      res.render('pages/index', {
-          title: 'Active Tasks',
-          page: 'taskPage',
-          display: 'taskDisplay',
-          user: req.user,
-          moment: moment,
-          tasks: tasks,
-          layout: 'layouts/main'
-          
-      });
-    });
-};
-
-// Display list of all pending tasks.
-exports.task_list_pending = function(req, res, next) {
-    models.Task.findAll({
-        where: {Employee: req.user.username, status: 'Todo'},
-        include: [
-            {
-              model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
-            },
-            {
-                model: models.Board,
-                attributes: ['id', 'board_name']
-            },
-        ]
-    }).then(function(tasks){
-
-        console.log("Board Listed successfully");
-
-      res.render('pages/index', {
-          title: 'Pending Tasks',
-          page: 'taskPage',
-          display: 'taskDisplay',
-          user: req.user,
-          moment: moment,
-          tasks: tasks,
-          layout: 'layouts/main'
-          
-      });
-      
-    });
-};
-
-// Display list of all completed tasks.
-exports.task_list_completed = function(req, res, next) {
-    models.Task.findAll({
-        where: {Employee: req.user.username, status: 'Done'},
-        include: [
-            {
-              model: models.user,
-              attributes: ['id', 'firstname', 'lastname', 'username', 'name']
-            },
-            {
-                model: models.Board,
-                attributes: ['id', 'board_name']
-            },
-        ]
-    }).then(function(tasks){
-
-        console.log("Board Listed successfully");
-
-      res.render('pages/index', {
-          title: 'Completed Tasks',
-          page: 'taskPage',
-          display: 'taskDisplay',
-          user: req.user,
-          moment: moment,
-          tasks: tasks,
-          layout: 'layouts/main'
-          
-      });
-    });
-};
 
 // Display detail page for a specific task.
 exports.task_detail = async function(req, res, next) {
     
+    let task_id = req.params.task_id;
+  let employee_id = req.user.id;
+  let team_id = req.params.team_id;
+  let board_id = req.params.board_id;
+    
     // const team = await models.Team.findById( req.params.team_id );
     // const board = await models.Team.findById( req.params.team_id );
     const board = await models.Board.findById( req.params.board_id );
-    
     const teamUsers = await models.Team.findById(
             req.params.team_id,
             {
@@ -351,6 +514,8 @@ exports.task_detail = async function(req, res, next) {
             title: 'Task Details',
             page: 'taskPage',
             display: 'taskDetail',
+            parent: 'My Tasks',
+            parentUrl: '/todo/team/' + team_id + '/board/' + board_id,
             teamUsers: teamUsers,
             task: task,
             board: board,
@@ -364,11 +529,11 @@ exports.task_detail = async function(req, res, next) {
         
 };
 
-// Update task status to todo
-exports.task_todo = function (req, res) {
+// Assign task 
+exports.task_assign = function (req, res) {
   console.log("I want to update status to todo");
  
-  let task_id = req.body.task_id;
+  let task_id = req.params.task_id;
   let employee_id = req.user.id;
   let team_id = req.body.team_id;
   let board_id = req.body.board_id;
@@ -386,7 +551,7 @@ exports.task_todo = function (req, res) {
         { // Clause
               where: 
               {
-                  id: req.body.task_id
+                  id: task_id
               }
           }
       //   returning: true, where: {id: req.params.task_id} 
@@ -445,7 +610,11 @@ exports.task_todo = function (req, res) {
             //     comment: 'Great!',
             //     message: 'Expense Approved Successfully.'
             //   }
+            if(board_id !== undefined) {
             res.redirect('/todo/task/' + team_id + '/' + board_id + '/' + task_id);
+            } else {
+                res.redirect('/todo/team/' + team_id + '/board/' + board_id);
+            }
             console.log('Task Updated to todo');
         } else {
             // req.session.sessionFlash = {
@@ -459,6 +628,61 @@ exports.task_todo = function (req, res) {
        });
        });
        });
+};
+
+// Unassign task 
+exports.task_unassign = function (req, res) {
+  console.log("I want to update status to todo");
+ 
+  let task_id = req.params.task_id;
+  let employee_id = req.user.id;
+  let team_id = req.params.team_id;
+  let board_id = req.params.board_id;
+  
+  
+  console.log("The task id is not null " + task_id);
+  
+  models.Task.update(
+      // Values to update
+          {
+              status: 'Backlog',
+              Employee: null,
+              startedAt: null,
+              sprintPeriod: null,
+              dueAt: null,
+              
+          },
+        { // Clause
+              where: 
+              {
+                  id: task_id
+              }
+          }
+      //   returning: true, where: {id: req.params.task_id} 
+       ).then(function(){
+           
+        //check if employee id is present in the route
+        if(employee_id){
+            req.session.sessionFlash = {
+                type: 'success',
+                comment: 'Great!',
+                message: 'Task Unassigned Successfully.'
+              }
+            if(board_id !== undefined) {
+            res.redirect('/todo/task/' + team_id + '/' + board_id + '/' + task_id);
+            } else {
+                res.redirect('/todo/team/' + team_id + '/board/' + board_id);
+            }
+            console.log('Task Updated to todo');
+        } else {
+            req.session.sessionFlash = {
+                type: 'error',
+                message: 'Oops, Something went wrong.'
+              }
+            res.redirect('/todo/task/' + team_id + '/' + board_id + '/' + task_id);
+            console.log('Task Not Updated ');
+        }
+    });
 };
 
 // Update task status to InProgess

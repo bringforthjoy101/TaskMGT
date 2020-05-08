@@ -4,9 +4,53 @@ const { check, validationResult } = require('express-validator');
 const { sanitizeBody } = require('express-validator');
 
 // Display author create form on GET.
-exports.index = function(req, res, next) {
-    
+exports.index = async function(req, res, next) {
     console.log('I am in todo Dashboard');
+    
+    const allHoursCompleted = await models.Task.sum('duration', {
+        where: {status: 'Done'}
+    });
+    
+    const myHoursCompleted = await models.Task.sum('duration', {
+        where: {Employee: req.user.username, status: 'Done'}
+    });
+    
+    const allHoursLeft = await models.Task.sum('duration', {
+        where: {completedAt: null}
+    });
+    
+    const myHoursLeft = await models.Task.sum('duration', {
+        where: {Employee: req.user.username, completedAt: null}
+    });
+    
+    // const myBoardCount = await models.Board.findAndCountAll({
+    //     where: {Employee: req.user.username}
+    // });
+    
+    const myTeams = await models.user.findById(
+                req.user.id,
+                {
+                    include: [
+                     {
+                          model: models.Team,
+                          as: 'teams',
+                          required: false,
+                          // Pass in the Team attributes that you want to retrieve
+                          attributes: ['id', 'team_name', 'createdAt'],
+                          through: {
+                            // This block of code allows you to retrieve the properties of the join table TeamUsers
+                            model: models.TeamUsers,
+                            as: 'teamUsers',
+                            attributes: ['team_id', 'user_id'],
+                        }
+                    }
+                ]
+              }
+        );
+    
+    const myTaskCount = await models.Task.findAndCountAll({
+        where: {Employee: req.user.username}
+    });
     
     models.Board.findAndCountAll(
         ).then(function(boardCount)
@@ -14,30 +58,38 @@ exports.index = function(req, res, next) {
           models.Team.findAndCountAll(
         ).then(function(teamCount)
         {
-        //   models.Task.findAndCountAll(
-        // ).then(function(taskCount)
-        // {
+          models.Task.findAndCountAll(
+        ).then(function(taskCount)
+        {
           models.user.findAndCountAll(
         ).then(function(userCount)
         {
    
-          res.render('pages/index', {
-              title: 'Homepage', 
-              page: 'dashboardPage1',
-              display: 'dashboardDisplay1',
-              boardCount: boardCount, 
-              teamCount: teamCount,
-              user: req.user,
-            //   taskCount: taskCount,
-              userCount: userCount,
-              layout: 'layouts/main'
-              
-          });
+            res.render('pages/index', {
+                title: 'Homepage', 
+                page: 'dashboardPage1',
+                display: 'dashboardDisplay1',
+                boardCount: boardCount, 
+                // myBoardCount: myBoardCount,
+                teamCount: teamCount,
+                myTeams: myTeams,
+                user: req.user,
+                taskCount: taskCount,
+                myTaskCount: myTaskCount,
+                userCount: userCount,
+                allHoursCompleted: allHoursCompleted,
+                myHoursCompleted: myHoursCompleted,
+                allHoursLeft: allHoursLeft,
+                myHoursLeft: myHoursLeft,
+                layout: 'layouts/main',
+                parent: 'Todo Dashboard',
+                parentUrl: '/',
+            });
           
           // res.render('pages/index_list_sample', { title: 'Post Details', layout: 'layouts/list'});
           // res.render('pages/index_detail_sample', { page: 'Home' , title: 'Post Details', layout: 'layouts/detail'});
         });
-        // });
+        });
         });
         });
 };
@@ -48,7 +100,9 @@ exports.board_create_get =
                 title: 'Create Board',
                 page: 'boardPage',
                 display: 'boardCreate',
-                layout: 'layouts/detail' 
+                layout: 'layouts/detail',
+                parent: ' Todo Dashboard',
+                parentUrl: '/'
     };
     res.render('pages/content', displayData);
 };
@@ -145,6 +199,7 @@ exports.board_delete_get = function(req, res, next) {
 };
 
 exports.board_update_post = function(req, res, next) {
+    let team_id = req.body.team_id;
     console.log("ID is " + req.params.board_id);
     models.Board.update(
         // Values to update
@@ -154,11 +209,8 @@ exports.board_update_post = function(req, res, next) {
             where: {
                 id: req.params.board_id
             }
-        }).then(board => {
-        res.json({
-            success: 'Board Updated Successfully',
-            board: board
-        });
+        }).then(function() {
+        return res.redirect('/todo/team/' + team_id);
     }).catch(error => {
         console.log("There was an error: " + error);
         res.status(404).send(error);
@@ -172,7 +224,7 @@ exports.board_list = function(req, res, next) {
         models.Board.findAll({
             // Add order conditions here....where clause, order, sort e.t.c
             order: [
-                ['board_name', 'ASC'],
+                ['id', 'ASC'],
             ],
             include: [
                 {
@@ -209,14 +261,35 @@ exports.board_detail = async function(req, res, next) {
         //   BoardId: req.params.board_id,
         // },
         order: [
-            ['id', 'ASC'],
+            ['id', 'DESC'],
         ]
     });
+    
+    const teamUsers = await models.Team.findById(
+            req.params.team_id,
+            {
+                include: [
+                 {
+                      model: models.user,
+                      as: 'users',
+                      required: false,
+                      // Pass in the Team attributes that you want to retrieve
+                      attributes: ['id', 'username', 'name', 'profile'],
+                      through: {
+                        // This block of code allows you to retrieve the properties of the join table TeamUsers
+                        model: models.TeamUsers,
+                        as: 'teamUsers',
+                        attributes: ['team_id', 'user_id'],
+                    }
+                }
+            ]
+          }
+    );
 
     const tasks = await models.Task.findAll({
         where: { BoardId: req.params.board_id },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -233,7 +306,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksBacklog = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Backlog' },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -250,7 +323,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksTodoManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Todo' },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -267,7 +340,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksInProgressManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'InProgress' },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -284,7 +357,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksReviewManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Review' },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -301,7 +374,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksDoneManager = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Done' },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -318,7 +391,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksTodo = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Todo', Employee: req.user.username },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -335,7 +408,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksInProgress = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'InProgress', Employee: req.user.username },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -352,7 +425,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksReview = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Review', Employee: req.user.username },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -369,7 +442,7 @@ exports.board_detail = async function(req, res, next) {
     const tasksDone = await models.Task.findAll({
         where: { BoardId: req.params.board_id, status: 'Done', Employee: req.user.username },
         order: [
-            ['title', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -384,7 +457,8 @@ exports.board_detail = async function(req, res, next) {
     });
     
     const team = await models.Team.findById(req.params.team_id);
-
+    const boardName = await models.Board.findById(req.params.board_id);
+    let team_id = req.params.team_id;
     models.Board.findById(
             req.params.board_id, {
                 include: [
@@ -403,13 +477,17 @@ exports.board_detail = async function(req, res, next) {
         
         // Successful, so render.
         res.render('pages/index',  {
-            title: 'Board Details',
+            title: 'Board Tasks',
             page: 'boardPage',
             display: 'boardDetail',
+            parent: 'Boards',
+            parentUrl: '/todo/team/' + team_id,
             employees: employees,
             board: the_board,
             board_id: board_id,
+            teamUsers: teamUsers,
             tasks: tasks,
+            boardName: boardName,
             tasksBacklog: tasksBacklog,
             tasksTodo: tasksTodo,
             tasksInProgress: tasksInProgress,

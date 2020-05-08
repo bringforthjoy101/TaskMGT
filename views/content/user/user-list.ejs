@@ -1,0 +1,41 @@
+
+    <!-- begin:: Content -->
+	<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+
+		<!--begin: Row-->
+		
+		<div class="row">
+		    <% users.forEach(function(user) { %>
+			<div class="col-xl-4 col-lg-6">
+				<div class="kt-portlet kt-portlet--height-fluid">
+					<div class="kt-portlet__body">
+						<div class="kt-widget kt-widget--general-1">
+							<div class="kt-media kt-media--lg kt-media--circle">
+								<img src="/assets/media/users/100_4.jpg" alt="image">
+							</div>
+							<div class="kt-widget__wrapper">
+								<div class="kt-widget__label">
+									<a href="#" class="kt-widget__title">
+										<%= user.name %>
+									</a>
+									<span class="kt-widget__desc">
+										<%= user.email %>
+									</span>
+									<span class="kt-widget__desc">
+										<%= user.profile %>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<% }); %>
+		</div>
+
+		<!--end: Row-->
+
+		
+	</div>
+
+	<!-- end:: Content -->

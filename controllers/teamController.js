@@ -19,11 +19,11 @@ exports.team_create_post = [
     .isLength({ min: 2 }).withMessage('must be at least 2 chars long')
     .custom(value => { return models.Team.findOne({ where: { team_name: value } })
     .then(team => { if (team) { return Promise.reject('Team Name Already Exists'); } }); }),
-    check('employees').not().isEmpty().withMessage('Please, check at least one employee!'),
+    check('employees').not().isEmpty().withMessage('Please, select at least one employee!'),
     
     // Fields Sanitization
     sanitizeBody('team_name').escape(),
-    sanitizeBody('employee').escape(),
+    sanitizeBody('employees').escape(),
     
     async function(req, res, next) {
         const result = validationResult(req);
@@ -113,7 +113,7 @@ exports.team_delete_get = function(req, res, next) {
               comment: 'Great!',
               message: 'Team Deleted Successfully.'
             };
-        console.log('Task Deleted Successfully');
+        console.log('Team Deleted Successfully');
         res.redirect('/todo/teams');
     });
 };
@@ -129,11 +129,13 @@ exports.team_update_post = function(req, res, next) {
             where: {
                 id: req.params.team_id
             }
-        }).then(team => {
-        res.json({
-            success: 'Team Updated Successfully',
-            team: team
-        });
+        }).then(function() {
+        // res.json({
+        //     success: 'Team Updated Successfully',
+        //     team: team
+        // });
+        console.log('Team Updated Successfully');
+        res.redirect('/todo/teams');
     }).catch(error => {
         console.log("There was an error: " + error);
         res.status(404).send(error);
@@ -173,7 +175,7 @@ exports.team_list = async function(req, res, next) {
     
     models.user.findAll({
         order: [
-            ['id', 'ASC'],
+            ['id', 'DESC'],
         ]
     }).then(function(teams){
 
@@ -181,6 +183,8 @@ exports.team_list = async function(req, res, next) {
           title: 'Teams',
           page: 'teamPage',
           display: 'teamDisplay',
+          parent: 'Teams',
+          parentUrl: '/todo/teams',
           employees: employees,
           user: req.user,
           errors: req.session.errors,
@@ -199,13 +203,11 @@ exports.team_list = async function(req, res, next) {
 
 // Display detail page for a specific team.
 exports.team_detail = async function(req, res, next) {
-    
+    try {
     const tasks = await models.Task.findAll({
-        where: {
-          TeamId: req.params.team_id,
-        },
+        where: { TeamId: req.params.team_id },
         order: [
-            ['id', 'ASC'],
+            ['id', 'DESC'],
         ],
         include: [
             {
@@ -248,7 +250,7 @@ exports.team_detail = async function(req, res, next) {
             // Add order conditions here....where clause, order, sort e.t.c
             
             order: [
-                ['board_name', 'ASC'],
+                ['id', 'DESC'],
             ],
             include: [
                 {
@@ -272,6 +274,8 @@ exports.team_detail = async function(req, res, next) {
             title: 'Team Details',
             page: 'teamPage',
             display: 'teamDetail',
+            parent: 'Teams',
+            parentUrl: '/todo/teams',
             team: team,
             tasks: tasks,
             boards: boards,
@@ -281,10 +285,12 @@ exports.team_detail = async function(req, res, next) {
             moment: moment,
             layout: 'layouts/detail'
         });
-        console.log('this is ' + team.user.username);
+        // console.log('this is ' + team.user.username);
         console.log('Team Users Listed Successfully');
-    }).catch(error => {
+        req.session.errors = null;
+    })}
+    catch(error) {
         console.log("There was an error: " + error);
-        res.status(404).send(error);
-    })
+        return res.status(404).send(error);
+    }
 };

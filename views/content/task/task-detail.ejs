@@ -5,7 +5,7 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-label">
                 <h3 class="kt-portlet__head-title">
-                    <%= title %>
+                    <%= task.title %>
                 </h3>
                 
             </div>
@@ -13,7 +13,12 @@
                 <div class="kt-portlet__head-toolbar">
                     <div class="dropdown dropdown-inline">
                     	<% if (user.profile !== 'staff') { %>
-                    	<button type="button" data-toggle="modal" data-target="#teamTask" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Assign</button>
+	                    	<% if (task.Employee) { %>
+	                    	<a href="/todo/task/<%= task.id %>/<%= task.Board.id %>/<%= task.Team.id %>/unassign" type="button" class="btn btn-danger btn-elevate btn-pill btn-elevate-air btn-sm">Unassign</a>
+	                    	<% } else { %>
+	                    	<button type="button" data-toggle="modal" data-target="#teamTask" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Assign</button>
+	                    	
+	                    	<% } %>
                     	<!--Modal Start-->
                     		<div class="modal fade" id="teamTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -25,7 +30,7 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/todo/task/assign" method="post" class="kt-form" >
+                                            <form action="/todo/task/<%= task.id %>/assign" method="post" class="kt-form" >
                                                 <div class="kt-portlet__body">
                                                     <div class="kt-section kt-section--first">
                                                         <div class="form-group">
@@ -55,7 +60,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
-                                                    <Input type="submit" class="btn btn-brand" value="Create">
+                                                    <Input type="submit" class="btn btn-brand" value="Assign">
                                                 </div>
                                             </form>
                                         </div>
@@ -66,7 +71,17 @@
                             </div>
                     	<!--Modal End-->
                     	<% } else { %>
-                        <a href="/todo/task/<%= task.Team.id %>/<%= board.id %>/<%= task.id %>/pick" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Pick up</a>
+	                    	<% if (task.status == 'Backlog') { %>
+	                        <a href="/todo/task/<%= task.Team.id %>/<%= board.id %>/<%= task.id %>/pick" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Pick up</a>
+	                        <% } else if (task.status == 'Todo') { %>
+	                        <a href="/todo/task/<%= task.Team.id %>/<%= board.id %>/<%= task.id %>/inprogress" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">InProgress</a>
+                        	<% } else if (task.status == 'InProgress') { %>
+                        	<a href="/todo/task/<%= task.Team.id %>/<%= board.id %>/<%= task.id %>/review" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Review</a>
+                        	<% } else if (task.status == 'Review') { %>
+                        	<a href="/todo/task/<%= task.Team.id %>/<%= board.id %>/<%= task.id %>/done" type="button" class="btn btn-info btn-elevate btn-pill btn-elevate-air btn-sm">Done</a>
+                        	<% } else { %>
+                        	<h3> Task Completed </h3>
+                        	<% } %>
                         <% } %>
                     </div>
                 </div>
@@ -188,7 +203,11 @@
 							Sprint
 						</a>
 						<div class="kt-widget-5__item-datetime">
-							<%= task.sprint || 'N/A' %>
+							<% if (task.sprint !== null) { %>
+							<%= task.sprint %>
+							<% } else { %>
+							Sprint not decided yet
+							<% } %>
 						</div>
 					</div>
 				</div>
