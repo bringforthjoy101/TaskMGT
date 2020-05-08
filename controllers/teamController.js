@@ -66,7 +66,7 @@ exports.team_create_post = [
             // if more than one employee has been selected
             else {
             // Loop through all the ids in req.body.employees i.e. the selected employees
-            await req.body.employees.forEach(async (id) => {
+             await req.body.employees.forEach(async (id) => {
                 // check if all employee selected are in the database
                 const employee = await models.user.findById(id);
                 if (!employee) {
