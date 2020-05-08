@@ -23,7 +23,7 @@ exports.team_create_post = [
     
     // Fields Sanitization
     sanitizeBody('team_name').escape(),
-    sanitizeBody('employees').escape(),
+    sanitizeBody('employee').escape(),
     
     async function(req, res, next) {
         const result = validationResult(req);
@@ -147,6 +147,7 @@ exports.team_list = async function(req, res, next) {
     console.log('I am in Team List Page');
     //console.log('The user ' + req.user);
     const employees = await models.user.findAll({
+        limit: 10,
         order: [
             ['id', 'ASC'],
         ]

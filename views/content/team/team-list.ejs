@@ -35,7 +35,7 @@
                 												<select class="form-control kt-select2" id="kt_select2_3" name="employees" multiple="multiple" style="width:100%">
                 													<optgroup label="Pls select employees for this team">
                 														<% employees.forEach(function(employee) { %>
-                														<option value="<%= employee.id %>"><%= employee.username %></option>
+                														<option value="<%= employee.id %>"><%= employee.name %></option>
                 														<% }); %>
                 													</optgroup>
                 												</select>
